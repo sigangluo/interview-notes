@@ -66,8 +66,15 @@
     markCurrent();
   }
 
+  // 路由：#/笔记路径.md 或 #/笔记路径.md#标题锚点
+  function route() {
+    var h = location.hash.indexOf("#/") === 0 ? decodeURI(location.hash.slice(2)) : "";
+    var i = h.indexOf("#");
+    return i < 0 ? { file: h, anchor: "" } : { file: h.slice(0, i), anchor: h.slice(i + 1) };
+  }
+
   function markCurrent() {
-    var file = location.hash.indexOf("#/") === 0 ? decodeURI(location.hash.slice(2)) : "";
+    var file = route().file;
     Array.prototype.forEach.call(document.querySelectorAll(".toc a.item"), function (a) {
       var on = decodeURI(a.getAttribute("href").slice(2)) === file;
       a.classList.toggle("current", on);
@@ -90,8 +97,18 @@
 
   // ---- Markdown 渲染：链接改写成站内路由，图片和相对路径按源文件位置解析 ----
 
+  // 标题锚点和 GitHub 的规则一致（build_site.py 里的 slugify 同步维护），同一个链接在站点和 GitHub 上都能跳
+  function slugify(text, used) {
+    var base = text.trim().toLowerCase().replace(/[^\p{L}\p{M}\p{N}\s_-]/gu, "").replace(/\s/g, "-");
+    var slug = base, n = 1;
+    while (used[slug]) slug = base + "-" + n++;
+    used[slug] = true;
+    return slug;
+  }
+
   function rewrite(href, fromFile) {
-    if (/^[a-z]+:/i.test(href) || href.charAt(0) === "#") return href;
+    if (/^[a-z]+:/i.test(href)) return href;
+    if (href.charAt(0) === "#") return href.charAt(1) === "/" ? href : "#/" + encodeURI(fromFile) + encodeURI(href);
     var hash = href.indexOf("#") >= 0 ? href.slice(href.indexOf("#")) : "";
     var rel = href.slice(0, href.length - hash.length);
     var parts = fromFile.split("/").slice(0, -1);
@@ -108,6 +125,10 @@
     var html = marked.parse(note.body, { gfm: true });
     var wrap = document.createElement("div");
     wrap.innerHTML = html;
+    var used = {};
+    Array.prototype.forEach.call(wrap.querySelectorAll("h1, h2, h3, h4, h5, h6"), function (h) {
+      h.id = slugify(h.textContent, used);
+    });
     Array.prototype.forEach.call(wrap.querySelectorAll("a[href]"), function (a) {
       var href = rewrite(decodeURI(a.getAttribute("href")), note.file);
       a.setAttribute("href", href);
@@ -512,17 +533,26 @@
     return '<p class="search-head">“' + esc(query) + '” 的 ' + hits.length + ' 条结果</p>' + list;
   }
 
+  // 只有锚点变了（同一篇里跳转）时不重新渲染，只滚动，交互图的状态得以保留
+  var shown = null;
+
   function render() {
     var main = document.getElementById("main");
     var query = document.getElementById("search").value.trim();
-    var file = location.hash.indexOf("#/") === 0 ? decodeURI(location.hash.slice(2)) : "";
-    if (file === "graph") { main.innerHTML = graphHtml(); setupGraph(); }
-    else if (query && !file) main.innerHTML = searchHtml(query);
-    else if (byFile[file]) main.innerHTML = noteHtml(byFile[file]);
-    else main.innerHTML = homeHtml();
-    window.NoteFigures.init(main);
-    markCurrent();
-    if (file) window.scrollTo(0, 0);
+    var r = route(), file = r.file;
+    var key = query && !file ? "?" + query : file;
+    if (key !== shown) {
+      if (file === "graph") { main.innerHTML = graphHtml(); setupGraph(); }
+      else if (query && !file) main.innerHTML = searchHtml(query);
+      else if (byFile[file]) main.innerHTML = noteHtml(byFile[file]);
+      else main.innerHTML = homeHtml();
+      window.NoteFigures.init(main);
+      shown = key;
+      markCurrent();
+      if (file && !r.anchor) window.scrollTo(0, 0);
+    }
+    var target = r.anchor && document.getElementById(r.anchor);
+    if (target) target.scrollIntoView();
   }
 
   // ---- 启动 ----
@@ -551,6 +581,13 @@
     this.setAttribute("aria-expanded", open ? "true" : "false");
   });
   document.getElementById("backdrop").addEventListener("click", closeNav);
+  // 交互图脚本生成的 #锚点 链接没经过 rewrite，在这里补成站内路由
+  document.addEventListener("click", function (e) {
+    var a = e.target.closest && e.target.closest('a[href^="#"]');
+    if (!a || a.getAttribute("href").charAt(1) === "/") return;
+    e.preventDefault();
+    location.hash = "#/" + encodeURI(route().file) + encodeURI(a.getAttribute("href"));
+  });
   window.addEventListener("hashchange", function () {
     document.getElementById("search").value = "";
     renderToc();

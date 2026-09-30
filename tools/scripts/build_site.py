@@ -9,12 +9,17 @@
 import json
 import os
 import re
+from urllib.parse import unquote
 
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 SECTIONS = ["技术", "产品", "面经与复盘"]
 PLACEHOLDER = "（待补充）"
 SCOPE_RE = re.compile(r"^> 范围：(.+)$", re.M)
 LINK_RE = re.compile(r"\[[^\]]*\]\(([^)]+\.md)\)")
+HEADING_RE = re.compile(r"^#{1,6}\s+(.+?)\s*$", re.M)
+FENCE_RE = re.compile(r"^```.*?^```", re.M | re.S)
+# 带锚点的链接：Markdown 的 ](路径#锚点) 和 HTML 的 href="路径#锚点"，路径为空表示本篇
+ANCHOR_LINK_RE = re.compile(r"\]\(([^)\s]*#[^)\s]+)\)|href=\"([^\"]*#[^\"]+)\"")
 
 
 def walk(directory):
@@ -63,6 +68,38 @@ def links_of(text, file):
     return sorted(set(found))
 
 
+def slugify(text):
+    """标题锚点，和 GitHub、site/assets/app.js 的规则一致：转小写，去掉标点，空白换成连字符。"""
+    return re.sub(r"\s", "-", re.sub(r"[^\w\s-]", "", text.strip().lower()))
+
+
+def anchors_of(text):
+    """一篇笔记里所有标题的锚点，重名的依次加 -1、-2。"""
+    found, seen = set(), {}
+    for heading in HEADING_RE.findall(FENCE_RE.sub("", text)):
+        slug = slugify(heading)
+        n = seen.get(slug, 0)
+        seen[slug] = n + 1
+        found.add(slug if n == 0 else f"{slug}-{n}")
+    return found
+
+
+def broken_anchors(notes):
+    """指向不存在的标题的链接。notes 是 {文件路径: 正文}。"""
+    anchors = {file: anchors_of(text) for file, text in notes.items()}
+    problems = []
+    for file, text in notes.items():
+        for m in ANCHOR_LINK_RE.finditer(text):
+            href = unquote(m.group(1) or m.group(2))
+            if re.match(r"^[a-z]+:", href):
+                continue
+            path, anchor = href.split("#", 1)
+            target = os.path.normpath(os.path.join(os.path.dirname(file), path)) if path else file
+            if target in anchors and anchor not in anchors[target]:
+                problems.append(f"{file}：{href}")
+    return problems
+
+
 def count(nodes, key):
     total = 0
     for node in nodes:
@@ -92,6 +129,17 @@ def main():
 
     collect(tree)
 
+    bodies = {}
+
+    def gather(nodes):
+        for node in nodes:
+            if "children" in node:
+                gather(node["children"])
+            else:
+                bodies[node["file"]] = node["body"]
+
+    gather(tree)
+
     def attach(nodes):
         for node in nodes:
             if "children" in node:
@@ -109,6 +157,11 @@ def main():
         json.dump(data, f, ensure_ascii=False, indent=1)
         f.write("\n")
     print(f"site/data/notes.json：{notes} 篇笔记，{done} 篇已写内容")
+    problems = broken_anchors(bodies)
+    if problems:
+        print(f"\n{len(problems)} 个链接指向不存在的标题（标题改过名，或链接写错了）：")
+        for p in problems:
+            print("  " + p)
 
 
 if __name__ == "__main__":

@@ -94,7 +94,7 @@
       + '<div class="rtt-rows"></div>'
       + '<div class="rtt-legend"><span class="k-tcp">TCP 握手</span><span class="k-tls">TLS 握手</span>'
       + '<span class="k-quic">QUIC 握手</span><span class="k-req">请求到首字节（1 RTT）</span><span class="k-xfer">传输剩余数据</span></div>'
-      + '<p class="rtt-note">简化模型：不含 DNS 查询、服务器处理时间和 TCP 慢启动（见 3.7），真实情况下往返次数的影响更大。</p>';
+      + '<p class="rtt-note">简化模型：不含 DNS 查询、服务器处理时间和 TCP 慢启动（见 <a href="#37-拥塞控制">3.7</a>），真实情况下往返次数的影响更大。</p>';
     var input = function (k) { return fig.querySelector('[data-in="' + k + '"]'); };
     var rows = fig.querySelector(".rtt-rows");
 
