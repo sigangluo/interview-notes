@@ -165,7 +165,7 @@
 
   function graphHtml() {
     return '<article class="graph"><h1>关联</h1>'
-      + '<p class="lead">笔记之间的引用关系，箭头从一篇指向它引用的笔记。拖动空白处平移，滚轮缩放，拖节点调整位置；悬停高亮，点击在右侧查看。</p>'
+      + '<p class="lead">笔记之间的引用关系，箭头从一篇指向它引用的笔记。拖动空白处平移，滚轮缩放，拖节点调整位置；悬停高亮，点击直接查看笔记。</p>'
       + '<div class="graph-wrap"><canvas id="graphCanvas"></canvas>'
       + '<aside class="graph-side" id="graphSide"><p class="muted">悬停或点击一个节点</p></aside></div></article>';
   }
@@ -336,14 +336,8 @@
       if (!side) return;
       if (!n) { side.innerHTML = '<p class="muted">悬停或点击一个节点</p>'; return; }
       var note = byFile[n.f];
-      var list = function (files) {
-        return files.length ? "<ul>" + files.map(function (f) {
-          return byFile[f] ? '<li><a href="#/' + encodeURI(f) + '">' + esc(byFile[f].title) + '</a></li>' : "";
-        }).join("") + "</ul>" : '<p class="muted">无</p>';
-      };
-      side.innerHTML = '<h2><a href="#/' + encodeURI(n.f) + '">' + esc(n.title) + '</a></h2>'
-        + '<p class="where">' + esc(n.f.split("/").slice(0, -1).join(" / ")) + '</p>'
-        + '<h3>引用</h3>' + list(note.links) + '<h3>被引用</h3>' + list(note.backlinks);
+      side.innerHTML = '<article class="article">' + renderMarkdown(note) + '</article>'
+        + '<p class="src"><a href="#/' + encodeURI(n.f) + '">打开完整页面</a></p>';
     }
 
     function resize() {

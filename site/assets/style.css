@@ -139,13 +139,10 @@ main:has(.graph) { max-width: none; }
 }
 #graphCanvas { flex: 1 1 0; min-width: 0; height: 100%; cursor: grab; }
 .graph-side {
-  width: 240px; flex: none; padding: 16px; border-left: 1px solid var(--border); overflow-y: auto;
+  width: 380px; flex: none; padding: 8px 22px 20px; border-left: 1px solid var(--border); overflow-y: auto;
 }
-.graph-side h2 { font-size: 16px; margin: 0 0 2px; }
-.graph-side h3 { font-size: 12.5px; margin: 14px 0 4px; color: var(--muted); font-weight: 600; }
-.graph-side .where { margin: 0; font-size: 12px; color: var(--muted); }
-.graph-side ul { margin: 0; padding-left: 1.1em; font-size: 13.5px; }
-.graph-side .muted { color: var(--muted); font-size: 13px; }
+.graph-side .article h1 { font-size: 20px; }
+.graph-side .muted { color: var(--muted); font-size: 13px; margin: 14px 0; }
 @media (max-width: 760px) {
   .graph-wrap { flex-direction: column; height: auto; }
   #graphCanvas { height: 420px; }
