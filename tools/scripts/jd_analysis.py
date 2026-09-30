@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """用社招 JD 统计每个目录项被提到的比例，生成 README 里的图。
 
-    python3 tools/scripts/jd_analysis.py [数据目录]      # 默认读仓库同级的 求职/data
+    python3 tools/scripts/jd_analysis.py [数据目录]      # 默认 ../求职/data
 
 数据目录的格式是 <公司>/技术.csv、<公司>/产品.csv，来自 cn-tech-jobs 看板
 （https://sigangluo.github.io/cn-tech-jobs/ 页面底部可下载各公司 CSV）。

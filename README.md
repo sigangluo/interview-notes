@@ -30,7 +30,7 @@
 
 ```bash
 pip install matplotlib
-python3 tools/scripts/jd_analysis.py [数据目录]    # 默认 ../../求职/data，格式为 <公司>/技术.csv、<公司>/产品.csv
+python3 tools/scripts/jd_analysis.py [数据目录]    # 默认 ../求职/data，格式为 <公司>/技术.csv、<公司>/产品.csv
 ```
 
 ### AI 已经是各类岗位的默认要求
@@ -72,7 +72,7 @@ python3 -m http.server -d site 8000    # 本地预览 http://localhost:8000（�
 
 ## 约定
 
-- 每个文件开头的「范围」写明这个文件管什么，内容超出范围就放到对应文件里再链接过去。
+- 还没写的笔记开头有一行「范围」，说明这个文件打算覆盖什么，只是临时占位。开始写时删掉它，内容超出这篇笔记的边界就放到对应文件里再链接过去。
 - 简历原文、真实薪资、不想公开的面经写成同目录的 `*.private.md`，已被 `.gitignore` 忽略，不会提交。
 
 ## 许可证
