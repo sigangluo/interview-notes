@@ -9,7 +9,7 @@
 - `产品/AI产品/技术理解` 只写产品需要懂到的程度，原理写在 `技术/AI应用开发/`，这里链接过去。
 - `产品/` 下「要懂什么」放知识目录，「怎么答」放 `面试题型/`。
 - 面经放 `面经与复盘/`，格式见那里的 README；复盘出的知识点写回对应的知识文件。
-- 新增目录项时同步更新 README 的「完整目录」；如果它在 JD 里有对应要求，在 `scripts/jd_analysis.py` 的 `ITEMS` 里加一行关键词，重新生成图。
+- 新增目录项时同步更新 README 的目录结构；如果它在 JD 里有对应要求，在 `tools/scripts/jd_analysis.py` 的 `ITEMS` 里加一行关键词，重新生成图。
 
 ## 隐私
 
@@ -18,7 +18,7 @@
 ## 统计图
 
 ```bash
-MPLCONFIGDIR=/tmp/mpl python3 scripts/jd_analysis.py    # 读 ../求职/data，写 docs/images/*.png
+MPLCONFIGDIR=/tmp/mpl python3 tools/scripts/jd_analysis.py    # 读 ../求职/data，写 tools/docs/images/*.png
 ```
 
 求职看板每周一更新数据，这些图不需要每周重跑；目录有调整、或者想看最新趋势时再重跑，并同步 README 里引用的百分比和 ★。

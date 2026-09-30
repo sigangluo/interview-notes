@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 """用社招 JD 统计每个目录项被提到的比例，生成 README 里的图。
 
-    python3 scripts/jd_analysis.py [数据目录]      # 默认 ../求职/data
+    python3 tools/scripts/jd_analysis.py [数据目录]      # 默认 ../../求职/data
 
 数据目录的格式是 <公司>/技术.csv、<公司>/产品.csv，来自 cn-tech-jobs 看板
 （https://sigangluo.github.io/cn-tech-jobs/ 页面底部可下载各公司 CSV）。
-输出 docs/images/*.png，并在终端打印每个目录项的比例（≥ 40% 的在 README 里标 ★）。
+输出 tools/docs/images/*.png，并在终端打印每个目录项的比例（≥ 40% 的在 README 里标 ★）。
 
 比例的算法：每家公司单独算「JD（职位描述 + 任职要求）命中关键词的职位占比」，再对公司取平均，
 只统计该岗位样本数 ≥ MIN_JOBS 的公司，避免职位最多的公司主导结果。
@@ -24,8 +24,9 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt  # noqa: E402
 
-ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-OUT = os.path.join(ROOT, "docs", "images")
+TOOLS = os.path.dirname(os.path.abspath(__file__))
+ROOT = os.path.dirname(TOOLS)
+OUT = os.path.join(TOOLS, "docs", "images")
 MIN_JOBS = 8
 STAR = 40
 
@@ -238,7 +239,7 @@ def plot_items(groups, fig_key, results):
 
 
 def main():
-    data_dir = sys.argv[1] if len(sys.argv) > 1 else os.path.join(ROOT, "..", "求职", "data")
+    data_dir = sys.argv[1] if len(sys.argv) > 1 else os.path.join(ROOT, "..", "..", "求职", "data")
     os.makedirs(OUT, exist_ok=True)
     setup()
     groups = load(data_dir)
