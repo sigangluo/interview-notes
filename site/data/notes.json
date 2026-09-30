@@ -1,0 +1,741 @@
+{
+ "tree": [
+  {
+   "title": "技术",
+   "children": [
+    {
+     "title": "AI应用开发",
+     "children": [
+      {
+       "title": "Agent",
+       "children": [
+        {
+         "title": "Skills与方法论",
+         "file": "技术/AI应用开发/Agent/Skills与方法论.md",
+         "scope": "Skills、AGENTS.md、规范驱动开发。",
+         "done": false,
+         "body": "# Skills与方法论\n\n> 范围：Skills、AGENTS.md、规范驱动开发。\n\n（待补充）\n"
+        },
+        {
+         "title": "多Agent",
+         "file": "技术/AI应用开发/Agent/多Agent.md",
+         "scope": "多 Agent 协作模式、A2A 协议。",
+         "done": false,
+         "body": "# 多Agent\n\n> 范围：多 Agent 协作模式、A2A 协议。\n\n（待补充）\n"
+        },
+        {
+         "title": "工作流编排",
+         "file": "技术/AI应用开发/Agent/工作流编排.md",
+         "scope": "工作流与自主 Agent 的取舍、状态机式编排。",
+         "done": false,
+         "body": "# 工作流编排\n\n> 范围：工作流与自主 Agent 的取舍、状态机式编排。\n\n（待补充）\n"
+        },
+        {
+         "title": "工具调用与MCP",
+         "file": "技术/AI应用开发/Agent/工具调用与MCP.md",
+         "scope": "Function Calling、MCP 协议、工具设计。",
+         "done": false,
+         "body": "# 工具调用与MCP\n\n> 范围：Function Calling、MCP 协议、工具设计。\n\n（待补充）\n"
+        },
+        {
+         "title": "核心范式",
+         "file": "技术/AI应用开发/Agent/核心范式.md",
+         "scope": "ReAct、规划、反思。",
+         "done": false,
+         "body": "# 核心范式\n\n> 范围：ReAct、规划、反思。\n\n（待补充）\n"
+        },
+        {
+         "title": "编码Agent",
+         "file": "技术/AI应用开发/Agent/编码Agent.md",
+         "scope": "Claude Code、Cursor 等编码 Agent 的实现原理。使用方法见 [AI辅助开发](../../全栈开发/共通/AI辅助开发.md)。",
+         "done": false,
+         "body": "# 编码Agent\n\n> 范围：Claude Code、Cursor 等编码 Agent 的实现原理。使用方法见 [AI辅助开发](../../全栈开发/共通/AI辅助开发.md)。\n\n（待补充）\n"
+        },
+        {
+         "title": "记忆与上下文管理",
+         "file": "技术/AI应用开发/Agent/记忆与上下文管理.md",
+         "scope": "短期 / 长期记忆、会话管理、上下文压缩。",
+         "done": false,
+         "body": "# 记忆与上下文管理\n\n> 范围：短期 / 长期记忆、会话管理、上下文压缩。\n\n（待补充）\n"
+        },
+        {
+         "title": "运行环境",
+         "file": "技术/AI应用开发/Agent/运行环境.md",
+         "scope": "浏览器自动化、代码沙箱与隔离执行。",
+         "done": false,
+         "body": "# 运行环境\n\n> 范围：浏览器自动化、代码沙箱与隔离执行。\n\n（待补充）\n"
+        }
+       ]
+      },
+      {
+       "title": "LLM原理",
+       "children": [
+        {
+         "title": "Transformer与注意力",
+         "file": "技术/AI应用开发/LLM原理/Transformer与注意力.md",
+         "scope": "Tokenizer、Embedding、自注意力、位置编码、上下文窗口。",
+         "done": false,
+         "body": "# Transformer与注意力\n\n> 范围：Tokenizer、Embedding、自注意力、位置编码、上下文窗口。\n\n（待补充）\n"
+        },
+        {
+         "title": "多模态",
+         "file": "技术/AI应用开发/LLM原理/多模态.md",
+         "scope": "视觉、语音、图像生成模型的应用层能力与接入方式。",
+         "done": false,
+         "body": "# 多模态\n\n> 范围：视觉、语音、图像生成模型的应用层能力与接入方式。\n\n（待补充）\n"
+        },
+        {
+         "title": "推理原理",
+         "file": "技术/AI应用开发/LLM原理/推理原理.md",
+         "scope": "采样参数、KV Cache、量化、推理模型。",
+         "done": false,
+         "body": "# 推理原理\n\n> 范围：采样参数、KV Cache、量化、推理模型。\n\n（待补充）\n"
+        },
+        {
+         "title": "训练与对齐",
+         "file": "技术/AI应用开发/LLM原理/训练与对齐.md",
+         "scope": "预训练、SFT、RLHF / DPO、LoRA，什么时候该微调。",
+         "done": false,
+         "body": "# 训练与对齐\n\n> 范围：预训练、SFT、RLHF / DPO、LoRA，什么时候该微调。\n\n（待补充）\n"
+        }
+       ]
+      },
+      {
+       "title": "RAG",
+       "children": [
+        {
+         "title": "Text-to-SQL",
+         "file": "技术/AI应用开发/RAG/Text-to-SQL.md",
+         "scope": "用自然语言查询数据库。",
+         "done": false,
+         "body": "# Text-to-SQL\n\n> 范围：用自然语言查询数据库。\n\n（待补充）\n"
+        },
+        {
+         "title": "切分与向量化",
+         "file": "技术/AI应用开发/RAG/切分与向量化.md",
+         "scope": "切分策略、Embedding 模型选择。",
+         "done": false,
+         "body": "# 切分与向量化\n\n> 范围：切分策略、Embedding 模型选择。\n\n（待补充）\n"
+        },
+        {
+         "title": "向量数据库",
+         "file": "技术/AI应用开发/RAG/向量数据库.md",
+         "scope": "Milvus、pgvector、FAISS，ANN 索引（HNSW、IVF）。",
+         "done": false,
+         "body": "# 向量数据库\n\n> 范围：Milvus、pgvector、FAISS，ANN 索引（HNSW、IVF）。\n\n（待补充）\n"
+        },
+        {
+         "title": "数据接入与解析",
+         "file": "技术/AI应用开发/RAG/数据接入与解析.md",
+         "scope": "PDF / Office 解析、OCR、网页抓取。",
+         "done": false,
+         "body": "# 数据接入与解析\n\n> 范围：PDF / Office 解析、OCR、网页抓取。\n\n（待补充）\n"
+        },
+        {
+         "title": "检索与重排",
+         "file": "技术/AI应用开发/RAG/检索与重排.md",
+         "scope": "混合检索、Query 改写、Rerank、GraphRAG。",
+         "done": false,
+         "body": "# 检索与重排\n\n> 范围：混合检索、Query 改写、Rerank、GraphRAG。\n\n（待补充）\n"
+        }
+       ]
+      },
+      {
+       "title": "工程落地",
+       "children": [
+        {
+         "title": "场景案例",
+         "file": "技术/AI应用开发/工程落地/场景案例.md",
+         "scope": "客服、知识库、内容生成、数据分析等落地方案。",
+         "done": false,
+         "body": "# 场景案例\n\n> 范围：客服、知识库、内容生成、数据分析等落地方案。\n\n（待补充）\n"
+        },
+        {
+         "title": "安全与合规",
+         "file": "技术/AI应用开发/工程落地/安全与合规.md",
+         "scope": "Prompt 注入、越狱、内容审核、数据隐私。",
+         "done": false,
+         "body": "# 安全与合规\n\n> 范围：Prompt 注入、越狱、内容审核、数据隐私。\n\n（待补充）\n"
+        },
+        {
+         "title": "性能与成本",
+         "file": "技术/AI应用开发/工程落地/性能与成本.md",
+         "scope": "延迟优化、流式、缓存、Token 成本控制。",
+         "done": false,
+         "body": "# 性能与成本\n\n> 范围：延迟优化、流式、缓存、Token 成本控制。\n\n（待补充）\n"
+        }
+       ]
+      },
+      {
+       "title": "开发框架与平台",
+       "children": [
+        {
+         "title": "代码框架",
+         "file": "技术/AI应用开发/开发框架与平台/代码框架.md",
+         "scope": "LangChain / LangGraph 的设计思路为主，Spring AI 作为 Java 实现方案。",
+         "done": false,
+         "body": "# 代码框架\n\n> 范围：LangChain / LangGraph 的设计思路为主，Spring AI 作为 Java 实现方案。\n\n（待补充）\n"
+        },
+        {
+         "title": "低代码平台",
+         "file": "技术/AI应用开发/开发框架与平台/低代码平台.md",
+         "scope": "Dify、FastGPT、Coze、n8n。",
+         "done": false,
+         "body": "# 低代码平台\n\n> 范围：Dify、FastGPT、Coze、n8n。\n\n（待补充）\n"
+        }
+       ]
+      },
+      {
+       "title": "模型接入与部署",
+       "children": [
+        {
+         "title": "API调用",
+         "file": "技术/AI应用开发/模型接入与部署/API调用.md",
+         "scope": "流式输出、Function Calling、结构化输出、重试与超时。",
+         "done": false,
+         "body": "# API调用\n\n> 范围：流式输出、Function Calling、结构化输出、重试与超时。\n\n（待补充）\n"
+        },
+        {
+         "title": "模型网关与路由",
+         "file": "技术/AI应用开发/模型接入与部署/模型网关与路由.md",
+         "scope": "多模型切换、降级、限流、计费。",
+         "done": false,
+         "body": "# 模型网关与路由\n\n> 范围：多模型切换、降级、限流、计费。\n\n（待补充）\n"
+        },
+        {
+         "title": "私有化部署",
+         "file": "技术/AI应用开发/模型接入与部署/私有化部署.md",
+         "scope": "Ollama、llama.cpp、vLLM。",
+         "done": false,
+         "body": "# 私有化部署\n\n> 范围：Ollama、llama.cpp、vLLM。\n\n（待补充）\n"
+        }
+       ]
+      },
+      {
+       "title": "评测与可观测",
+       "children": [
+        {
+         "title": "Badcase分析与迭代",
+         "file": "技术/AI应用开发/评测与可观测/Badcase分析与迭代.md",
+         "scope": "Badcase 归因、数据飞轮。",
+         "done": false,
+         "body": "# Badcase分析与迭代\n\n> 范围：Badcase 归因、数据飞轮。\n\n（待补充）\n"
+        },
+        {
+         "title": "评测体系",
+         "file": "技术/AI应用开发/评测与可观测/评测体系.md",
+         "scope": "评测集构建、评测指标、LLM-as-judge。",
+         "done": false,
+         "body": "# 评测体系\n\n> 范围：评测集构建、评测指标、LLM-as-judge。\n\n（待补充）\n"
+        },
+        {
+         "title": "链路追踪与监控",
+         "file": "技术/AI应用开发/评测与可观测/链路追踪与监控.md",
+         "scope": "Trace、Token 与延迟监控、Langfuse。",
+         "done": false,
+         "body": "# 链路追踪与监控\n\n> 范围：Trace、Token 与延迟监控、Langfuse。\n\n（待补充）\n"
+        }
+       ]
+      },
+      {
+       "title": "Prompt与上下文工程",
+       "file": "技术/AI应用开发/Prompt与上下文工程.md",
+       "scope": "Prompt 设计模式、Few-shot、上下文的组织与压缩。",
+       "done": false,
+       "body": "# Prompt与上下文工程\n\n> 范围：Prompt 设计模式、Few-shot、上下文的组织与压缩。\n\n（待补充）\n"
+      }
+     ]
+    },
+    {
+     "title": "全栈开发",
+     "children": [
+      {
+       "title": "共通",
+       "children": [
+        {
+         "title": "AI辅助开发",
+         "file": "技术/全栈开发/共通/AI辅助开发.md",
+         "scope": "Cursor、Claude Code 等 AI 编程工具的使用、工作流与规范（Rules、AGENTS.md）。实现原理见 [编码Agent](../../AI应用开发/Agent/编码Agent.md)。",
+         "done": false,
+         "body": "# AI辅助开发\n\n> 范围：Cursor、Claude Code 等 AI 编程工具的使用、工作流与规范（Rules、AGENTS.md）。实现原理见 [编码Agent](../../AI应用开发/Agent/编码Agent.md)。\n\n（待补充）\n"
+        },
+        {
+         "title": "API设计与通信",
+         "file": "技术/全栈开发/共通/API设计与通信.md",
+         "scope": "REST、GraphQL、gRPC、WebSocket / SSE、网关。",
+         "done": false,
+         "body": "# API设计与通信\n\n> 范围：REST、GraphQL、gRPC、WebSocket / SSE、网关。\n\n（待补充）\n"
+        },
+        {
+         "title": "工程实践",
+         "file": "技术/全栈开发/共通/工程实践.md",
+         "scope": "Git、设计模式、测试、代码规范、Code Review。",
+         "done": false,
+         "body": "# 工程实践\n\n> 范围：Git、设计模式、测试、代码规范、Code Review。\n\n（待补充）\n"
+        },
+        {
+         "title": "操作系统",
+         "file": "技术/全栈开发/共通/操作系统.md",
+         "scope": "进程与线程、内存管理、IO 模型、并发与锁。",
+         "done": false,
+         "body": "# 操作系统\n\n> 范围：进程与线程、内存管理、IO 模型、并发与锁。\n\n（待补充）\n"
+        },
+        {
+         "title": "数据库基础",
+         "file": "技术/全栈开发/共通/数据库基础.md",
+         "scope": "SQL、索引、事务与隔离级别。",
+         "done": false,
+         "body": "# 数据库基础\n\n> 范围：SQL、索引、事务与隔离级别。\n\n（待补充）\n"
+        },
+        {
+         "title": "数据结构与算法",
+         "file": "技术/全栈开发/共通/数据结构与算法.md",
+         "scope": "常用数据结构，算法思想（双指针、二分、DP、回溯、贪心），手撕题。",
+         "done": false,
+         "body": "# 数据结构与算法\n\n> 范围：常用数据结构，算法思想（双指针、二分、DP、回溯、贪心），手撕题。\n\n（待补充）\n"
+        },
+        {
+         "title": "系统设计",
+         "file": "技术/全栈开发/共通/系统设计.md",
+         "scope": "方法论与经典题：短链、Feed 流、秒杀、IM。",
+         "done": false,
+         "body": "# 系统设计\n\n> 范围：方法论与经典题：短链、Feed 流、秒杀、IM。\n\n（待补充）\n"
+        },
+        {
+         "title": "计算机网络",
+         "file": "技术/全栈开发/共通/计算机网络.md",
+         "scope": "TCP / UDP、HTTP / HTTPS / HTTP2 / HTTP3、DNS、WebSocket、CDN。",
+         "done": false,
+         "body": "# 计算机网络\n\n> 范围：TCP / UDP、HTTP / HTTPS / HTTP2 / HTTP3、DNS、WebSocket、CDN。\n\n（待补充）\n"
+        },
+        {
+         "title": "认证与安全",
+         "file": "技术/全栈开发/共通/认证与安全.md",
+         "scope": "Session / JWT、OAuth2、SSO、RBAC，XSS / CSRF / SQL 注入。",
+         "done": false,
+         "body": "# 认证与安全\n\n> 范围：Session / JWT、OAuth2、SSO、RBAC，XSS / CSRF / SQL 注入。\n\n（待补充）\n"
+        },
+        {
+         "title": "部署与运维",
+         "file": "技术/全栈开发/共通/部署与运维.md",
+         "scope": "Linux 常用命令、Docker、Kubernetes 入门、Nginx 与 HTTPS、CI/CD、监控与日志。",
+         "done": false,
+         "body": "# 部署与运维\n\n> 范围：Linux 常用命令、Docker、Kubernetes 入门、Nginx 与 HTTPS、CI/CD、监控与日志。\n\n（待补充）\n"
+        }
+       ]
+      },
+      {
+       "title": "前端",
+       "children": [
+        {
+         "title": "HTML与CSS",
+         "file": "技术/全栈开发/前端/HTML与CSS.md",
+         "scope": "语义化、Flex / Grid 布局、BFC、响应式、Tailwind。",
+         "done": false,
+         "body": "# HTML与CSS\n\n> 范围：语义化、Flex / Grid 布局、BFC、响应式、Tailwind。\n\n（待补充）\n"
+        },
+        {
+         "title": "JavaScript与TypeScript",
+         "file": "技术/全栈开发/前端/JavaScript与TypeScript.md",
+         "scope": "作用域与闭包、原型链、异步与事件循环，TypeScript 类型系统。",
+         "done": false,
+         "body": "# JavaScript与TypeScript\n\n> 范围：作用域与闭包、原型链、异步与事件循环，TypeScript 类型系统。\n\n（待补充）\n"
+        },
+        {
+         "title": "Node.js与全栈框架",
+         "file": "技术/全栈开发/前端/Node.js与全栈框架.md",
+         "scope": "Node.js 事件循环、BFF、SSR / SSG、Next.js。",
+         "done": false,
+         "body": "# Node.js与全栈框架\n\n> 范围：Node.js 事件循环、BFF、SSR / SSG、Next.js。\n\n（待补充）\n"
+        },
+        {
+         "title": "工程化",
+         "file": "技术/全栈开发/前端/工程化.md",
+         "scope": "Vite / webpack、Babel、模块化、包管理、Monorepo。",
+         "done": false,
+         "body": "# 工程化\n\n> 范围：Vite / webpack、Babel、模块化、包管理、Monorepo。\n\n（待补充）\n"
+        },
+        {
+         "title": "性能优化",
+         "file": "技术/全栈开发/前端/性能优化.md",
+         "scope": "加载性能、渲染性能、Core Web Vitals、性能监控。",
+         "done": false,
+         "body": "# 性能优化\n\n> 范围：加载性能、渲染性能、Core Web Vitals、性能监控。\n\n（待补充）\n"
+        },
+        {
+         "title": "框架原理",
+         "file": "技术/全栈开发/前端/框架原理.md",
+         "scope": "React 为主（Hooks、Fiber、Diff），Vue 响应式原理。",
+         "done": false,
+         "body": "# 框架原理\n\n> 范围：React 为主（Hooks、Fiber、Diff），Vue 响应式原理。\n\n（待补充）\n"
+        },
+        {
+         "title": "浏览器原理",
+         "file": "技术/全栈开发/前端/浏览器原理.md",
+         "scope": "渲染流程、缓存、跨域、存储、事件机制。",
+         "done": false,
+         "body": "# 浏览器原理\n\n> 范围：渲染流程、缓存、跨域、存储、事件机制。\n\n（待补充）\n"
+        },
+        {
+         "title": "状态、路由与数据请求",
+         "file": "技术/全栈开发/前端/状态、路由与数据请求.md",
+         "scope": "Redux / Zustand、React Router、TanStack Query、表单。",
+         "done": false,
+         "body": "# 状态、路由与数据请求\n\n> 范围：Redux / Zustand、React Router、TanStack Query、表单。\n\n（待补充）\n"
+        },
+        {
+         "title": "跨端",
+         "file": "技术/全栈开发/前端/跨端.md",
+         "scope": "小程序、uni-app / Taro、React Native、Electron。",
+         "done": false,
+         "body": "# 跨端\n\n> 范围：小程序、uni-app / Taro、React Native、Electron。\n\n（待补充）\n"
+        }
+       ]
+      },
+      {
+       "title": "后端",
+       "children": [
+        {
+         "title": "JVM",
+         "file": "技术/全栈开发/后端/JVM.md",
+         "scope": "内存区域、类加载、GC 算法与收集器。",
+         "done": false,
+         "body": "# JVM\n\n> 范围：内存区域、类加载、GC 算法与收集器。\n\n（待补充）\n"
+        },
+        {
+         "title": "Java基础与集合",
+         "file": "技术/全栈开发/后端/Java基础与集合.md",
+         "scope": "面向对象、异常、泛型、反射，HashMap / ConcurrentHashMap 等集合。",
+         "done": false,
+         "body": "# Java基础与集合\n\n> 范围：面向对象、异常、泛型、反射，HashMap / ConcurrentHashMap 等集合。\n\n（待补充）\n"
+        },
+        {
+         "title": "Java并发",
+         "file": "技术/全栈开发/后端/Java并发.md",
+         "scope": "线程与线程池、synchronized / volatile、AQS 与锁、JUC 工具类、CompletableFuture。",
+         "done": false,
+         "body": "# Java并发\n\n> 范围：线程与线程池、synchronized / volatile、AQS 与锁、JUC 工具类、CompletableFuture。\n\n（待补充）\n"
+        },
+        {
+         "title": "Spring生态",
+         "file": "技术/全栈开发/后端/Spring生态.md",
+         "scope": "IoC / AOP、Spring Boot 自动配置、Spring MVC、事务、MyBatis。",
+         "done": false,
+         "body": "# Spring生态\n\n> 范围：IoC / AOP、Spring Boot 自动配置、Spring MVC、事务、MyBatis。\n\n（待补充）\n"
+        },
+        {
+         "title": "分布式与微服务",
+         "file": "技术/全栈开发/后端/分布式与微服务.md",
+         "scope": "CAP / BASE、分布式事务、分布式锁、RPC、Spring Cloud / Dubbo、注册与配置中心。",
+         "done": false,
+         "body": "# 分布式与微服务\n\n> 范围：CAP / BASE、分布式事务、分布式锁、RPC、Spring Cloud / Dubbo、注册与配置中心。\n\n（待补充）\n"
+        },
+        {
+         "title": "性能调优与问题排查",
+         "file": "技术/全栈开发/后端/性能调优与问题排查.md",
+         "scope": "JVM 调优、慢 SQL，线上 CPU / 内存 / 死锁问题排查。",
+         "done": false,
+         "body": "# 性能调优与问题排查\n\n> 范围：JVM 调优、慢 SQL，线上 CPU / 内存 / 死锁问题排查。\n\n（待补充）\n"
+        },
+        {
+         "title": "搜索",
+         "file": "技术/全栈开发/后端/搜索.md",
+         "scope": "Elasticsearch 倒排索引、查询与调优。",
+         "done": false,
+         "body": "# 搜索\n\n> 范围：Elasticsearch 倒排索引、查询与调优。\n\n（待补充）\n"
+        },
+        {
+         "title": "数据库进阶",
+         "file": "技术/全栈开发/后端/数据库进阶.md",
+         "scope": "MySQL 索引原理与优化、锁、MVCC、redo / undo / binlog、分库分表。",
+         "done": false,
+         "body": "# 数据库进阶\n\n> 范围：MySQL 索引原理与优化、锁、MVCC、redo / undo / binlog、分库分表。\n\n（待补充）\n"
+        },
+        {
+         "title": "消息队列",
+         "file": "技术/全栈开发/后端/消息队列.md",
+         "scope": "Kafka / RocketMQ 原理、可靠投递、顺序消息、消息积压处理。",
+         "done": false,
+         "body": "# 消息队列\n\n> 范围：Kafka / RocketMQ 原理、可靠投递、顺序消息、消息积压处理。\n\n（待补充）\n"
+        },
+        {
+         "title": "缓存",
+         "file": "技术/全栈开发/后端/缓存.md",
+         "scope": "Redis 数据结构、持久化、集群，缓存穿透 / 击穿 / 雪崩，缓存一致性。",
+         "done": false,
+         "body": "# 缓存\n\n> 范围：Redis 数据结构、持久化、集群，缓存穿透 / 击穿 / 雪崩，缓存一致性。\n\n（待补充）\n"
+        },
+        {
+         "title": "高并发与高可用",
+         "file": "技术/全栈开发/后端/高并发与高可用.md",
+         "scope": "限流、熔断、降级、容灾、秒杀设计。",
+         "done": false,
+         "body": "# 高并发与高可用\n\n> 范围：限流、熔断、降级、容灾、秒杀设计。\n\n（待补充）\n"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "title": "通用面试",
+     "children": [
+      {
+       "title": "HR面与谈薪",
+       "file": "技术/通用面试/HR面与谈薪.md",
+       "scope": "期望薪资、反问环节、offer 对比。个人简历原文、真实薪资等隐私内容写在同目录的 `*.private.md` 里，不会被提交。",
+       "done": false,
+       "body": "# HR面与谈薪\n\n> 范围：期望薪资、反问环节、offer 对比。个人简历原文、真实薪资等隐私内容写在同目录的 `*.private.md` 里，不会被提交。\n\n（待补充）\n"
+      },
+      {
+       "title": "简历与自我介绍",
+       "file": "技术/通用面试/简历与自我介绍.md",
+       "scope": "技术岗简历要点，1 分钟 / 3 分钟自我介绍。个人简历原文、真实薪资等隐私内容写在同目录的 `*.private.md` 里，不会被提交。",
+       "done": false,
+       "body": "# 简历与自我介绍\n\n> 范围：技术岗简历要点，1 分钟 / 3 分钟自我介绍。个人简历原文、真实薪资等隐私内容写在同目录的 `*.private.md` 里，不会被提交。\n\n（待补充）\n"
+      },
+      {
+       "title": "行为面试",
+       "file": "技术/通用面试/行为面试.md",
+       "scope": "STAR 故事库：每个故事的背景、任务、行动、结果，适用的问题类型与追问预案。",
+       "done": false,
+       "body": "# 行为面试\n\n> 范围：STAR 故事库：每个故事的背景、任务、行动、结果，适用的问题类型与追问预案。\n\n（待补充）\n"
+      },
+      {
+       "title": "项目经历讲述稿",
+       "file": "技术/通用面试/项目经历讲述稿.md",
+       "scope": "按技术视角讲项目：背景、架构、难点、取舍、结果与追问预案。",
+       "done": false,
+       "body": "# 项目经历讲述稿\n\n> 范围：按技术视角讲项目：背景、架构、难点、取舍、结果与追问预案。\n\n（待补充）\n"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "title": "产品",
+   "children": [
+    {
+     "title": "AI产品",
+     "children": [
+      {
+       "title": "Prompt与原型搭建",
+       "file": "产品/AI产品/Prompt与原型搭建.md",
+       "scope": "用 Dify、Coze、Cursor 等工具自己搭 Demo 验证想法。",
+       "done": false,
+       "body": "# Prompt与原型搭建\n\n> 范围：用 Dify、Coze、Cursor 等工具自己搭 Demo 验证想法。\n\n（待补充）\n"
+      },
+      {
+       "title": "与算法团队协作",
+       "file": "产品/AI产品/与算法团队协作.md",
+       "scope": "数据需求、标注规范、训练目标对齐。",
+       "done": false,
+       "body": "# 与算法团队协作\n\n> 范围：数据需求、标注规范、训练目标对齐。\n\n（待补充）\n"
+      },
+      {
+       "title": "体验与交互设计",
+       "file": "产品/AI产品/体验与交互设计.md",
+       "scope": "对话、Copilot、Agent 等交互形态，不确定输出的体验处理。",
+       "done": false,
+       "body": "# 体验与交互设计\n\n> 范围：对话、Copilot、Agent 等交互形态，不确定输出的体验处理。\n\n（待补充）\n"
+      },
+      {
+       "title": "商业化与成本",
+       "file": "产品/AI产品/商业化与成本.md",
+       "scope": "Token 成本、定价、ROI。",
+       "done": false,
+       "body": "# 商业化与成本\n\n> 范围：Token 成本、定价、ROI。\n\n（待补充）\n"
+      },
+      {
+       "title": "场景挖掘与需求判断",
+       "file": "产品/AI产品/场景挖掘与需求判断.md",
+       "scope": "什么问题适合用 AI、什么不适合，需求真伪与价值判断。",
+       "done": false,
+       "body": "# 场景挖掘与需求判断\n\n> 范围：什么问题适合用 AI、什么不适合，需求真伪与价值判断。\n\n（待补充）\n"
+      },
+      {
+       "title": "安全与合规",
+       "file": "产品/AI产品/安全与合规.md",
+       "scope": "内容安全、隐私、AI 伦理与监管。",
+       "done": false,
+       "body": "# 安全与合规\n\n> 范围：内容安全、隐私、AI 伦理与监管。\n\n（待补充）\n"
+      },
+      {
+       "title": "技术理解",
+       "file": "产品/AI产品/技术理解.md",
+       "scope": "模型能力边界，Agent / RAG 的基本原理。原理细节见 [技术/AI应用开发](../../技术/AI应用开发/)，这里只写产品需要理解到的程度。",
+       "done": false,
+       "body": "# 技术理解\n\n> 范围：模型能力边界，Agent / RAG 的基本原理。原理细节见 [技术/AI应用开发](../../技术/AI应用开发/)，这里只写产品需要理解到的程度。\n\n（待补充）\n"
+      },
+      {
+       "title": "效果评测与迭代",
+       "file": "产品/AI产品/效果评测与迭代.md",
+       "scope": "评测集、Badcase 分析、数据飞轮。",
+       "done": false,
+       "body": "# 效果评测与迭代\n\n> 范围：评测集、Badcase 分析、数据飞轮。\n\n（待补充）\n"
+      }
+     ]
+    },
+    {
+     "title": "AI行业与竞品",
+     "children": [
+      {
+       "title": "AI行业与竞品",
+       "file": "产品/AI行业与竞品/README.md",
+       "scope": "模型厂商格局、AI 应用分类。各家 AI 产品的拆解按公司或产品另建文件放在本目录。",
+       "done": false,
+       "body": "# AI行业与竞品\n\n> 范围：模型厂商格局、AI 应用分类。各家 AI 产品的拆解按公司或产品另建文件放在本目录。\n\n（待补充）\n"
+      }
+     ]
+    },
+    {
+     "title": "产品基本功",
+     "children": [
+      {
+       "title": "产品规划与策略",
+       "file": "产品/产品基本功/产品规划与策略.md",
+       "scope": "路线图、MVP、0 到 1、商业模式。",
+       "done": false,
+       "body": "# 产品规划与策略\n\n> 范围：路线图、MVP、0 到 1、商业模式。\n\n（待补充）\n"
+      },
+      {
+       "title": "产品设计与PRD",
+       "file": "产品/产品基本功/产品设计与PRD.md",
+       "scope": "信息架构、交互、原型、PRD。",
+       "done": false,
+       "body": "# 产品设计与PRD\n\n> 范围：信息架构、交互、原型、PRD。\n\n（待补充）\n"
+      },
+      {
+       "title": "需求分析与用户研究",
+       "file": "产品/产品基本功/需求分析与用户研究.md",
+       "scope": "用户调研、需求挖掘、优先级判断。",
+       "done": false,
+       "body": "# 需求分析与用户研究\n\n> 范围：用户调研、需求挖掘、优先级判断。\n\n（待补充）\n"
+      },
+      {
+       "title": "项目推进与跨团队协作",
+       "file": "产品/产品基本功/项目推进与跨团队协作.md",
+       "scope": "排期、推动、冲突处理。",
+       "done": false,
+       "body": "# 项目推进与跨团队协作\n\n> 范围：排期、推动、冲突处理。\n\n（待补充）\n"
+      }
+     ]
+    },
+    {
+     "title": "数据能力",
+     "children": [
+      {
+       "title": "AB实验",
+       "file": "产品/数据能力/AB实验.md",
+       "scope": "实验设计、显著性、常见陷阱。",
+       "done": false,
+       "body": "# AB实验\n\n> 范围：实验设计、显著性、常见陷阱。\n\n（待补充）\n"
+      },
+      {
+       "title": "SQL",
+       "file": "产品/数据能力/SQL.md",
+       "scope": "产品岗常用 SQL 查询。",
+       "done": false,
+       "body": "# SQL\n\n> 范围：产品岗常用 SQL 查询。\n\n（待补充）\n"
+      },
+      {
+       "title": "指标体系",
+       "file": "产品/数据能力/指标体系.md",
+       "scope": "北极星指标、AARRR、指标拆解。",
+       "done": false,
+       "body": "# 指标体系\n\n> 范围：北极星指标、AARRR、指标拆解。\n\n（待补充）\n"
+      },
+      {
+       "title": "数据分析方法",
+       "file": "产品/数据能力/数据分析方法.md",
+       "scope": "漏斗、归因、同期群、异动分析。",
+       "done": false,
+       "body": "# 数据分析方法\n\n> 范围：漏斗、归因、同期群、异动分析。\n\n（待补充）\n"
+      }
+     ]
+    },
+    {
+     "title": "通用面试",
+     "children": [
+      {
+       "title": "HR面与谈薪",
+       "file": "产品/通用面试/HR面与谈薪.md",
+       "scope": "期望薪资、反问环节、offer 对比。个人简历原文、真实薪资等隐私内容写在同目录的 `*.private.md` 里，不会被提交。",
+       "done": false,
+       "body": "# HR面与谈薪\n\n> 范围：期望薪资、反问环节、offer 对比。个人简历原文、真实薪资等隐私内容写在同目录的 `*.private.md` 里，不会被提交。\n\n（待补充）\n"
+      },
+      {
+       "title": "简历与自我介绍",
+       "file": "产品/通用面试/简历与自我介绍.md",
+       "scope": "产品岗简历要点，1 分钟 / 3 分钟自我介绍。个人简历原文、真实薪资等隐私内容写在同目录的 `*.private.md` 里，不会被提交。",
+       "done": false,
+       "body": "# 简历与自我介绍\n\n> 范围：产品岗简历要点，1 分钟 / 3 分钟自我介绍。个人简历原文、真实薪资等隐私内容写在同目录的 `*.private.md` 里，不会被提交。\n\n（待补充）\n"
+      },
+      {
+       "title": "行为面试",
+       "file": "产品/通用面试/行为面试.md",
+       "scope": "STAR 故事库：每个故事的背景、任务、行动、结果，适用的问题类型与追问预案。",
+       "done": false,
+       "body": "# 行为面试\n\n> 范围：STAR 故事库：每个故事的背景、任务、行动、结果，适用的问题类型与追问预案。\n\n（待补充）\n"
+      },
+      {
+       "title": "项目经历讲述稿",
+       "file": "产品/通用面试/项目经历讲述稿.md",
+       "scope": "按产品视角讲项目：用户、需求、方案、数据结果与复盘。",
+       "done": false,
+       "body": "# 项目经历讲述稿\n\n> 范围：按产品视角讲项目：用户、需求、方案、数据结果与复盘。\n\n（待补充）\n"
+      }
+     ]
+    },
+    {
+     "title": "面试题型",
+     "children": [
+      {
+       "title": "AI产品设计题",
+       "file": "产品/面试题型/AI产品设计题.md",
+       "scope": "为某个场景设计 AI 功能或 Agent。",
+       "done": false,
+       "body": "# AI产品设计题\n\n> 范围：为某个场景设计 AI 功能或 Agent。\n\n（待补充）\n"
+      },
+      {
+       "title": "产品分析题",
+       "file": "产品/面试题型/产品分析题.md",
+       "scope": "你最喜欢的产品、如何改进某个产品。",
+       "done": false,
+       "body": "# 产品分析题\n\n> 范围：你最喜欢的产品、如何改进某个产品。\n\n（待补充）\n"
+      },
+      {
+       "title": "估算题",
+       "file": "产品/面试题型/估算题.md",
+       "scope": "例如估算某个市场规模。",
+       "done": false,
+       "body": "# 估算题\n\n> 范围：例如估算某个市场规模。\n\n（待补充）\n"
+      },
+      {
+       "title": "数据分析题",
+       "file": "产品/面试题型/数据分析题.md",
+       "scope": "例如 DAU 下降了怎么分析。",
+       "done": false,
+       "body": "# 数据分析题\n\n> 范围：例如 DAU 下降了怎么分析。\n\n（待补充）\n"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "title": "面经与复盘",
+   "children": [
+    {
+     "title": "面经与复盘",
+     "file": "面经与复盘/README.md",
+     "scope": "",
+     "done": true,
+     "body": "# 面经与复盘\n\n真实面试的记录，按岗位放在 `技术/` 或 `产品/` 下，一场面试一个文件，文件名为 `公司-岗位-轮次-YYYY-MM-DD.md`，例如 `字节-AI应用开发-一面-2026-10-15.md`。\n\n每个文件包含：\n\n1. **基本信息**：公司、岗位、轮次、时长、形式。\n2. **题目与回答**：按顺序记录问题和自己当时的回答要点。\n3. **复盘**：答得不好的地方、正确答案或更好的讲法，并链接到对应的知识文件（比如 `../../技术/全栈开发/后端/Java并发.md`），把补充内容写回那里。\n\n公开之前注意：\n\n- 不写面试官姓名等可以识别个人的信息。\n- 公司明确要求保密的题目不写。\n- 不想公开的记录用 `*.private.md` 命名，不会被提交。\n"
+    }
+   ]
+  }
+ ],
+ "stats": {
+  "notes": 89,
+  "done": 1
+ }
+}

@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>面试复习笔记</title>
+<meta name="description" content="面向 AI 产品、全栈开发、AI 应用开发岗位的面试复习笔记。">
+<script>
+  // 在样式加载前应用已保存的主题，避免闪一下
+  try { var t = localStorage.getItem('notes-theme'); if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t; } catch (e) {}
+</script>
+<link rel="stylesheet" href="assets/style.css">
+<script src="https://cdn.jsdelivr.net/npm/marked@15/marked.min.js"></script>
+<script src="assets/app.js" defer></script>
+</head>
+<body>
+<header class="top">
+  <button class="btn icon" id="navBtn" type="button" aria-label="打开目录" aria-expanded="false">☰</button>
+  <a class="brand" href="#/">面试复习笔记</a>
+  <label class="search">
+    <input type="search" id="search" placeholder="搜索标题或内容" autocomplete="off" aria-label="搜索">
+  </label>
+  <a class="btn" id="repoLink" href="https://github.com/sigangluo/interview-notes" target="_blank" rel="noopener">GitHub</a>
+  <button class="btn" id="themeBtn" type="button" aria-label="切换深色 / 浅色">◐ 主题</button>
+</header>
+
+<div class="layout">
+  <nav class="toc" id="toc" aria-label="目录"></nav>
+  <main id="main">
+    <p class="loading">加载中…</p>
+  </main>
+</div>
+
+<div class="backdrop" id="backdrop" hidden></div>
+</body>
+</html>

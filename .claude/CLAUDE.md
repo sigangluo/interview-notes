@@ -15,6 +15,12 @@
 
 仓库会公开。简历原文、真实薪资、面试官信息、公司要求保密的题目都不要写进普通文件；需要记录的写进 `*.private.md`（已被忽略）。提交前检查 `git status` 里没有这类内容。
 
+## 站点
+
+改了任何笔记 Markdown 后，提交前跑 `python3 tools/scripts/build_site.py` 重新生成 `site/data/notes.json`，两个一起提交。推到 `main` 后 GitHub Actions 会把 `site/` 部署到 GitHub Pages。不要手改 `site/data/notes.json`。
+
+本地预览用 `python3 -m http.server -d site 8000`，不能直接双击 html。
+
 ## 统计图
 
 ```bash

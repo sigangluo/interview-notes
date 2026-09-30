@@ -57,6 +57,19 @@ python3 tools/scripts/jd_analysis.py [数据目录]    # 默认 ../../求职/dat
 
 AI 产品岗最看重跨团队协作（89%）、场景挖掘（78%）、规划与策略（73%）、体验设计（65%）、与算法团队协作（58%）。技术理解（52%）和效果评测（49%）都过了高频线，是 AI 产品和传统产品岗最不一样的地方。AB 实验（15%）、SQL（8%）比例低，保留但放在后面。
 
+## 在线阅读
+
+笔记可以在站点上浏览（左侧目录、搜索、深色模式）：**<https://sigangluo.github.io/interview-notes/>**
+
+Markdown 是内容来源，`site/` 只负责展示，两者通过生成的数据文件连接：
+
+```bash
+python3 tools/scripts/build_site.py    # 扫描 技术/、产品/、面经与复盘/，生成 site/data/notes.json
+python3 -m http.server -d site 8000    # 本地预览 http://localhost:8000（不能直接双击 html 打开）
+```
+
+推送到 `main` 后，`.github/workflows/deploy-pages.yml` 会把 `site/` 部署到 GitHub Pages（仓库 Settings → Pages 的 Source 需设为 GitHub Actions）。`*.private.md` 不会被扫描进去。
+
 ## 约定
 
 - 每个文件开头的「范围」写明这个文件管什么，内容超出范围就放到对应文件里再链接过去。
