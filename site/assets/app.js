@@ -161,44 +161,236 @@
     return html ? '<div class="refs">' + html + '</div>' : "";
   }
 
-  // ---- 关联总览：左列是引用方，右列是被引用方 ----
-
-  function edges() {
-    var list = [];
-    Object.keys(byFile).forEach(function (f) {
-      byFile[f].links.forEach(function (t) { if (byFile[t]) list.push([f, t]); });
-    });
-    return list;
-  }
+  // ---- 关联总览：canvas 力导向图，做法参考 Harness-RSI 的论文关系图 ----
 
   function graphHtml() {
-    var list = edges();
-    if (!list.length) return '<article class="home"><h1>关联</h1><p class="lead">还没有笔记之间的引用。</p></article>';
-    var sources = [], targets = [];
-    list.forEach(function (e) {
-      if (sources.indexOf(e[0]) < 0) sources.push(e[0]);
-      if (targets.indexOf(e[1]) < 0) targets.push(e[1]);
-    });
-    var row = 32, w = 760, h = Math.max(sources.length, targets.length) * row + 48;
-    var yOf = function (arr, f) { return 36 + arr.indexOf(f) * row; };
-    var lines = list.map(function (e, i) {
-      var y1 = yOf(sources, e[0]), y2 = yOf(targets, e[1]);
-      return '<path d="M 250 ' + y1 + ' C 380 ' + y1 + ', 380 ' + y2 + ', 510 ' + y2 + '"/>';
-    }).join("");
-    var label = function (arr, x, anchor) {
-      return arr.map(function (f) {
-        var title = byFile[f].title;
-        var y = yOf(arr, f);
-        var width = title.length * 14 + 8;
-        var rx = anchor === "end" ? x - width : x;
-        return '<a href="#/' + encodeURI(f) + '">'
-          + '<rect x="' + rx + '" y="' + (y - 12) + '" width="' + width + '" height="22" fill="transparent"/>'
-          + '<text x="' + x + '" y="' + (y + 4) + '" text-anchor="' + anchor + '">' + esc(title) + '</text></a>';
-      }).join("");
-    };
     return '<article class="graph"><h1>关联</h1>'
-      + '<p class="lead">笔记之间的引用关系，左列引用右列。在笔记正文里用普通的 Markdown 链接引用另一篇即可。</p>'
-      + '<svg viewBox="0 0 ' + w + ' ' + h + '">' + lines + label(sources, 240, "end") + label(targets, 520, "start") + '</svg></article>';
+      + '<p class="lead">笔记之间的引用关系，箭头从一篇指向它引用的笔记。拖动空白处平移，滚轮缩放，拖节点调整位置；悬停高亮，点击在右侧查看。</p>'
+      + '<div class="graph-wrap"><canvas id="graphCanvas"></canvas>'
+      + '<aside class="graph-side" id="graphSide"><p class="muted">悬停或点击一个节点</p></aside></div></article>';
+  }
+
+  function setupGraph() {
+    var canvas = document.getElementById("graphCanvas");
+    if (!canvas) return;
+    var ctx = canvas.getContext("2d");
+    var dpr = Math.max(1, window.devicePixelRatio || 1);
+    var W = 0, H = 0;
+
+    var degree = {};
+    Object.keys(byFile).forEach(function (f) {
+      degree[f] = byFile[f].links.length + byFile[f].backlinks.length;
+    });
+    var files = Object.keys(byFile).filter(function (f) { return degree[f] > 0; });
+    var maxDeg = files.reduce(function (m, f) { return Math.max(m, degree[f]); }, 1);
+
+    var groups = [], groupOf = {};
+    files.forEach(function (f) {
+      var g = f.split("/").slice(0, 2).join("/");
+      if (groups.indexOf(g) < 0) groups.push(g);
+      groupOf[f] = groups.indexOf(g);
+    });
+
+    function radius(f) { return 5 + Math.sqrt(degree[f] / maxDeg) * 7; }
+
+    var nodes = files.map(function (f) {
+      return { f: f, title: byFile[f].title, g: groupOf[f], x: 0, y: 0, vx: 0, vy: 0, r: radius(f) };
+    });
+    var nodeByFile = {};
+    nodes.forEach(function (n) { nodeByFile[n.f] = n; });
+    var links = [];
+    files.forEach(function (f) {
+      byFile[f].links.forEach(function (t) { if (nodeByFile[t]) links.push({ s: nodeByFile[f], t: nodeByFile[t] }); });
+    });
+
+    function rand(seed) { var x = Math.sin(seed) * 10000; return x - Math.floor(x); }
+
+    function layout() {
+      var cols = Math.ceil(Math.sqrt(groups.length));
+      var rows = Math.ceil(groups.length / cols);
+      var cw = W / cols, rh = H / rows;
+      nodes.forEach(function (n, i) {
+        var col = n.g % cols, row = Math.floor(n.g / cols);
+        n.x = cw * (col + 0.5) + (rand(i * 13.37) - 0.5) * cw * 0.6;
+        n.y = rh * (row + 0.5) + (rand(i * 7.77) - 0.5) * rh * 0.6;
+        n.vx = 0; n.vy = 0;
+        n.home = { x: cw * (col + 0.5), y: rh * (row + 0.5) };
+      });
+      for (var it = 0; it < 300; it++) {
+        for (var a = 0; a < nodes.length; a++) {
+          var na = nodes[a], fx = 0, fy = 0;
+          for (var b = 0; b < nodes.length; b++) {
+            if (a === b) continue;
+            var nb = nodes[b];
+            var dx = na.x - nb.x, dy = na.y - nb.y;
+            var d2 = dx * dx + dy * dy + 0.01, d = Math.sqrt(d2);
+            var rep = (na.g === nb.g ? 900 : 140) / d2;
+            fx += dx / d * rep; fy += dy / d * rep;
+          }
+          fx += (na.home.x - na.x) * 0.02;
+          fy += (na.home.y - na.y) * 0.02;
+          na.vx = (na.vx + fx) * 0.7; na.vy = (na.vy + fy) * 0.7;
+        }
+        links.forEach(function (l) {
+          var dx = l.t.x - l.s.x, dy = l.t.y - l.s.y;
+          var dist = Math.sqrt(dx * dx + dy * dy) || 0.01;
+          var f = (dist - 110) * 0.004;
+          l.s.vx += dx / dist * f; l.s.vy += dy / dist * f;
+          l.t.vx -= dx / dist * f; l.t.vy -= dy / dist * f;
+        });
+        nodes.forEach(function (n) {
+          n.x = Math.max(n.r + 8, Math.min(W - n.r - 8, n.x + n.vx));
+          n.y = Math.max(n.r + 8, Math.min(H - n.r - 8, n.y + n.vy));
+        });
+      }
+    }
+
+    function color() {
+      var s = getComputedStyle(document.documentElement);
+      return { ink: s.getPropertyValue("--ink").trim(), ink2: s.getPropertyValue("--ink-2").trim(),
+        accent: s.getPropertyValue("--accent").trim(), edge: s.getPropertyValue("--border").trim(),
+        surface: s.getPropertyValue("--surface").trim() };
+    }
+
+    var view = { x: 0, y: 0, scale: 1 };
+    var hovered = null, pinned = null, dragging = null, panning = null;
+
+    function screen(n) { return { x: n.x * view.scale + view.x, y: n.y * view.scale + view.y }; }
+    function world(px, py) { return { x: (px - view.x) / view.scale, y: (py - view.y) / view.scale }; }
+    function hit(px, py) {
+      for (var i = nodes.length - 1; i >= 0; i--) {
+        var pt = screen(nodes[i]);
+        var dx = px - pt.x, dy = py - pt.y;
+        if (dx * dx + dy * dy <= Math.pow(nodes[i].r * view.scale + 4, 2)) return nodes[i];
+      }
+      return null;
+    }
+    function neighbors(n) {
+      var set = {};
+      links.forEach(function (l) {
+        if (l.s === n) set[l.t.f] = l.t;
+        if (l.t === n) set[l.s.f] = l.s;
+      });
+      return set;
+    }
+
+    function arrow(x, y, ux, uy, size, c) {
+      var wing = size * 0.62;
+      ctx.beginPath();
+      ctx.moveTo(x, y);
+      ctx.lineTo(x - ux * size - uy * wing, y - uy * size + ux * wing);
+      ctx.lineTo(x - ux * size + uy * wing, y - uy * size - ux * wing);
+      ctx.closePath();
+      ctx.fillStyle = c; ctx.fill();
+    }
+
+    function draw() {
+      var c = color();
+      ctx.clearRect(0, 0, W, H);
+      var active = pinned || hovered;
+      var near = active ? neighbors(active) : null;
+      links.forEach(function (l) {
+        var s = screen(l.s), e = screen(l.t);
+        var on = active && (l.s === active || l.t === active);
+        var dx = e.x - s.x, dy = e.y - s.y, dist = Math.hypot(dx, dy) || 1;
+        var ux = dx / dist, uy = dy / dist;
+        ctx.beginPath();
+        ctx.moveTo(s.x + ux * (l.s.r * view.scale + 2), s.y + uy * (l.s.r * view.scale + 2));
+        ctx.lineTo(e.x - ux * (l.t.r * view.scale + 5), e.y - uy * (l.t.r * view.scale + 5));
+        ctx.lineWidth = on ? 1.6 : 1;
+        ctx.strokeStyle = on ? c.accent : c.edge;
+        ctx.globalAlpha = active ? (on ? 0.95 : 0.08) : 0.9;
+        ctx.stroke();
+        arrow(e.x - ux * (l.t.r * view.scale + 5), e.y - uy * (l.t.r * view.scale + 5), ux, uy, on ? 7 : 5, on ? c.accent : c.edge);
+      });
+      ctx.globalAlpha = 1;
+      nodes.forEach(function (n) {
+        var pt = screen(n);
+        var dim = active && n !== active && !near[n.f];
+        ctx.globalAlpha = dim ? 0.25 : 1;
+        ctx.beginPath();
+        ctx.arc(pt.x, pt.y, n.r * view.scale, 0, Math.PI * 2);
+        ctx.fillStyle = c.accent; ctx.fill();
+        ctx.lineWidth = 2; ctx.strokeStyle = c.surface; ctx.stroke();
+        if (n === active) {
+          ctx.beginPath(); ctx.arc(pt.x, pt.y, n.r * view.scale + 3.5, 0, Math.PI * 2);
+          ctx.lineWidth = 1.5; ctx.strokeStyle = c.ink; ctx.stroke();
+        }
+      });
+      ctx.globalAlpha = 1;
+      ctx.font = "12px -apple-system, 'PingFang SC', sans-serif";
+      ctx.textBaseline = "middle";
+      nodes.forEach(function (n) {
+        var pt = screen(n);
+        var dim = active && n !== active && !near[n.f];
+        ctx.globalAlpha = dim ? 0.3 : 1;
+        ctx.fillStyle = c.ink;
+        ctx.textAlign = "left";
+        ctx.fillText(n.title, pt.x + n.r * view.scale + 6, pt.y);
+      });
+      ctx.globalAlpha = 1;
+    }
+
+    function showSide(n) {
+      var side = document.getElementById("graphSide");
+      if (!side) return;
+      if (!n) { side.innerHTML = '<p class="muted">悬停或点击一个节点</p>'; return; }
+      var note = byFile[n.f];
+      var list = function (files) {
+        return files.length ? "<ul>" + files.map(function (f) {
+          return byFile[f] ? '<li><a href="#/' + encodeURI(f) + '">' + esc(byFile[f].title) + '</a></li>' : "";
+        }).join("") + "</ul>" : '<p class="muted">无</p>';
+      };
+      side.innerHTML = '<h2><a href="#/' + encodeURI(n.f) + '">' + esc(n.title) + '</a></h2>'
+        + '<p class="where">' + esc(n.f.split("/").slice(0, -1).join(" / ")) + '</p>'
+        + '<h3>引用</h3>' + list(note.links) + '<h3>被引用</h3>' + list(note.backlinks);
+    }
+
+    function resize() {
+      var rect = canvas.getBoundingClientRect();
+      W = rect.width; H = rect.height;
+      canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      layout();
+      draw();
+    }
+
+    canvas.addEventListener("mousemove", function (e) {
+      var rect = canvas.getBoundingClientRect();
+      var px = e.clientX - rect.left, py = e.clientY - rect.top;
+      if (dragging) {
+        var w = world(px, py);
+        dragging.x = w.x - dragging.offX; dragging.y = w.y - dragging.offY;
+        draw(); return;
+      }
+      if (panning) { view.x = px - panning.x; view.y = py - panning.y; draw(); return; }
+      var n = hit(px, py);
+      if (n !== hovered) { hovered = n; canvas.style.cursor = n ? "pointer" : "grab"; showSide(pinned || hovered); draw(); }
+    });
+    canvas.addEventListener("mousedown", function (e) {
+      var rect = canvas.getBoundingClientRect();
+      var px = e.clientX - rect.left, py = e.clientY - rect.top;
+      var n = hit(px, py);
+      if (n) { var w = world(px, py); dragging = n; dragging.offX = w.x - n.x; dragging.offY = w.y - n.y; }
+      else panning = { x: px - view.x, y: py - view.y };
+    });
+    window.addEventListener("mouseup", function () {
+      if (dragging) { pinned = dragging; showSide(pinned); }
+      dragging = null; panning = null; draw();
+    });
+    canvas.addEventListener("wheel", function (e) {
+      e.preventDefault();
+      var rect = canvas.getBoundingClientRect();
+      var px = e.clientX - rect.left, py = e.clientY - rect.top;
+      var next = Math.min(3, Math.max(0.4, view.scale * (e.deltaY < 0 ? 1.1 : 0.9)));
+      view.x = px - (px - view.x) * (next / view.scale);
+      view.y = py - (py - view.y) * (next / view.scale);
+      view.scale = next;
+      draw();
+    }, { passive: false });
+
+    resize();
+    window.addEventListener("resize", resize);
   }
 
   function noteHtml(note) {
@@ -240,7 +432,7 @@
     var main = document.getElementById("main");
     var query = document.getElementById("search").value.trim();
     var file = location.hash.indexOf("#/") === 0 ? decodeURI(location.hash.slice(2)) : "";
-    if (file === "graph") main.innerHTML = graphHtml();
+    if (file === "graph") { main.innerHTML = graphHtml(); setupGraph(); }
     else if (query && !file) main.innerHTML = searchHtml(query);
     else if (byFile[file]) main.innerHTML = noteHtml(byFile[file]);
     else main.innerHTML = homeHtml();

@@ -95,6 +95,7 @@ a:hover { text-decoration: underline; }
 .toc .empty { padding: 8px; color: var(--muted); font-size: 13px; }
 
 main { flex: 1; min-width: 0; padding: 28px 48px 96px; max-width: 860px; }
+main:has(.graph) { max-width: none; }
 .loading { color: var(--muted); }
 .crumbs { margin: 0 0 14px; font-size: 12.5px; color: var(--muted); }
 .crumbs a { color: var(--muted); }
@@ -132,10 +133,24 @@ main { flex: 1; min-width: 0; padding: 28px 48px 96px; max-width: 860px; }
   color: var(--ink); font-size: 13.5px; font-weight: 650;
 }
 .graph-link:hover { background: var(--surface-2); text-decoration: none; }
-.graph svg { width: 100%; height: auto; }
-.graph path { fill: none; stroke: var(--accent); stroke-opacity: 0.55; stroke-width: 1.25; }
-.graph text { fill: var(--ink); font-size: 13px; }
-.graph a:hover text { fill: var(--accent); }
+.graph-wrap {
+  display: flex; gap: 16px; height: calc(100vh - 230px); min-height: 420px;
+  border: 1px solid var(--border); border-radius: 12px; background: var(--surface); overflow: hidden;
+}
+#graphCanvas { flex: 1 1 0; min-width: 0; height: 100%; cursor: grab; }
+.graph-side {
+  width: 240px; flex: none; padding: 16px; border-left: 1px solid var(--border); overflow-y: auto;
+}
+.graph-side h2 { font-size: 16px; margin: 0 0 2px; }
+.graph-side h3 { font-size: 12.5px; margin: 14px 0 4px; color: var(--muted); font-weight: 600; }
+.graph-side .where { margin: 0; font-size: 12px; color: var(--muted); }
+.graph-side ul { margin: 0; padding-left: 1.1em; font-size: 13.5px; }
+.graph-side .muted { color: var(--muted); font-size: 13px; }
+@media (max-width: 760px) {
+  .graph-wrap { flex-direction: column; height: auto; }
+  #graphCanvas { height: 420px; }
+  .graph-side { width: auto; border-left: 0; border-top: 1px solid var(--border); }
+}
 .src { margin-top: 36px; font-size: 12.5px; color: var(--muted); }
 
 .home h1 { font-size: 26px; margin: 0 0 6px; }
