@@ -60,7 +60,8 @@
     var toc = document.getElementById("toc");
     var done = count(tree, function (n) { return n.done; });
     var total = count(tree, function () { return true; });
-    toc.innerHTML = '<div class="progress">' + done + ' / ' + total + ' 篇已写'
+    toc.innerHTML = '<a class="graph-link" href="#/graph">关联</a>'
+      + '<div class="progress">' + done + ' / ' + total + ' 篇已写'
       + '<div class="bar"><span style="width:' + (total ? done / total * 100 : 0) + '%"></span></div></div>'
       + tocHtml(tree);
     markCurrent();
@@ -144,39 +145,60 @@
       + sections + '<p class="src">目录设计的依据见 <a href="' + REPO + '#readme">README</a>。</p></article>';
   }
 
-  // ---- 关联图：当前笔记在中心，连到它提及的和提及它的笔记 ----
+  // ---- 参考文献式引用：这篇引用了谁、谁引用了这篇 ----
 
-  function related(note) {
-    var out = note.links.filter(function (f) { return byFile[f]; });
-    var back = Object.keys(byFile).filter(function (f) { return byFile[f].links.indexOf(note.file) >= 0 && out.indexOf(f) < 0; });
-    return out.concat(back);
+  function refList(files) {
+    return "<ol>" + files.map(function (f) {
+      var n = byFile[f];
+      return n ? '<li><a href="#/' + encodeURI(f) + '">' + esc(n.title) + '</a></li>' : "";
+    }).join("") + "</ol>";
   }
 
-  function graphHtml(note) {
-    var rel = related(note);
-    if (!rel.length) return "";
-    var w = 640, h = 150 + Math.max(0, rel.length - 2) * 36, cx = w / 2, cy = h / 2;
-    var nodes = rel.map(function (f, i) {
-      var angle = -Math.PI / 2 + (2 * Math.PI * i) / rel.length;
-      var rx = Math.min(250, w / 2 - 70), ry = h / 2 - 30;
-      return { f: f, x: cx + rx * Math.cos(angle), y: cy + ry * Math.sin(angle), back: note.links.indexOf(f) < 0 };
+  function refsHtml(note) {
+    var html = "";
+    if (note.links.length) html += "<h2>引用</h2>" + refList(note.links);
+    if (note.backlinks.length) html += "<h2>被引用</h2>" + refList(note.backlinks);
+    return html ? '<div class="refs">' + html + '</div>' : "";
+  }
+
+  // ---- 关联总览：左列是引用方，右列是被引用方 ----
+
+  function edges() {
+    var list = [];
+    Object.keys(byFile).forEach(function (f) {
+      byFile[f].links.forEach(function (t) { if (byFile[t]) list.push([f, t]); });
     });
-    var lines = nodes.map(function (nd) {
-      return '<line x1="' + cx + '" y1="' + cy + '" x2="' + nd.x + '" y2="' + nd.y + '"/>';
+    return list;
+  }
+
+  function graphHtml() {
+    var list = edges();
+    if (!list.length) return '<article class="home"><h1>关联</h1><p class="lead">还没有笔记之间的引用。</p></article>';
+    var sources = [], targets = [];
+    list.forEach(function (e) {
+      if (sources.indexOf(e[0]) < 0) sources.push(e[0]);
+      if (targets.indexOf(e[1]) < 0) targets.push(e[1]);
+    });
+    var row = 32, w = 760, h = Math.max(sources.length, targets.length) * row + 48;
+    var yOf = function (arr, f) { return 36 + arr.indexOf(f) * row; };
+    var lines = list.map(function (e, i) {
+      var y1 = yOf(sources, e[0]), y2 = yOf(targets, e[1]);
+      return '<path d="M 250 ' + y1 + ' C 380 ' + y1 + ', 380 ' + y2 + ', 510 ' + y2 + '"/>';
     }).join("");
-    var circles = nodes.map(function (nd) {
-      var title = byFile[nd.f].title;
-      var labelW = Math.max(44, title.length * 13);
-      return '<a href="#/' + encodeURI(nd.f) + '">'
-        + '<rect x="' + (nd.x - labelW / 2) + '" y="' + (nd.y - 14) + '" width="' + labelW + '" height="40" fill="transparent"/>'
-        + '<circle cx="' + nd.x + '" cy="' + nd.y + '" r="6"/>'
-        + '<text x="' + nd.x + '" y="' + (nd.y + 20) + '" text-anchor="middle">' + esc(title) + '</text></a>';
-    }).join("");
-    return '<div class="graph"><h2>关联</h2><svg viewBox="0 0 ' + w + ' ' + h + '">'
-      + lines + circles
-      + '<circle class="self" cx="' + cx + '" cy="' + cy + '" r="7"/>'
-      + '<text class="self" x="' + cx + '" y="' + (cy - 16) + '" text-anchor="middle">' + esc(note.title) + '</text>'
-      + '</svg></div>';
+    var label = function (arr, x, anchor) {
+      return arr.map(function (f) {
+        var title = byFile[f].title;
+        var y = yOf(arr, f);
+        var width = title.length * 14 + 8;
+        var rx = anchor === "end" ? x - width : x;
+        return '<a href="#/' + encodeURI(f) + '">'
+          + '<rect x="' + rx + '" y="' + (y - 12) + '" width="' + width + '" height="22" fill="transparent"/>'
+          + '<text x="' + x + '" y="' + (y + 4) + '" text-anchor="' + anchor + '">' + esc(title) + '</text></a>';
+      }).join("");
+    };
+    return '<article class="graph"><h1>关联</h1>'
+      + '<p class="lead">笔记之间的引用关系，左列引用右列。在笔记正文里用普通的 Markdown 链接引用另一篇即可。</p>'
+      + '<svg viewBox="0 0 ' + w + ' ' + h + '">' + lines + label(sources, 240, "end") + label(targets, 520, "start") + '</svg></article>';
   }
 
   function noteHtml(note) {
@@ -185,8 +207,7 @@
     });
     crumbs.unshift('<a href="#/">全部</a>');
     return '<nav class="crumbs">' + crumbs.join(" / ") + '</nav>'
-      + '<article class="article">' + renderMarkdown(note) + '</article>'
-      + graphHtml(note)
+      + '<article class="article">' + renderMarkdown(note) + refsHtml(note) + '</article>'
       + '<p class="src">源文件：<a href="' + REPO + '/blob/main/' + encodeURI(note.file) + '">' + esc(note.file) + '</a></p>';
   }
 
@@ -219,7 +240,8 @@
     var main = document.getElementById("main");
     var query = document.getElementById("search").value.trim();
     var file = location.hash.indexOf("#/") === 0 ? decodeURI(location.hash.slice(2)) : "";
-    if (query && !file) main.innerHTML = searchHtml(query);
+    if (file === "graph") main.innerHTML = graphHtml();
+    else if (query && !file) main.innerHTML = searchHtml(query);
     else if (byFile[file]) main.innerHTML = noteHtml(byFile[file]);
     else main.innerHTML = homeHtml();
     markCurrent();
@@ -258,7 +280,7 @@
     render();
   });
 
-  fetch("data/notes.json").then(function (r) { return r.json(); }).then(start).catch(function () {
+  fetch("data/notes.json?v=" + Date.now()).then(function (r) { return r.json(); }).then(start).catch(function () {
     document.getElementById("main").innerHTML = '<p class="loading">数据加载失败。请先运行 <code>python3 tools/scripts/build_site.py</code> 生成 site/data/notes.json，再用本地服务器打开（不能直接双击 html）。</p>';
   });
 })();

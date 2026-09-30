@@ -79,6 +79,27 @@ def main():
         children = walk(os.path.join(ROOT, section))
         if children:
             tree.append({"title": section, "children": children})
+    # 反向引用：谁的正文链接了这篇
+    incoming = {}
+
+    def collect(nodes):
+        for node in nodes:
+            if "children" in node:
+                collect(node["children"])
+            else:
+                for target in node["links"]:
+                    incoming.setdefault(target, []).append(node["file"])
+
+    collect(tree)
+
+    def attach(nodes):
+        for node in nodes:
+            if "children" in node:
+                attach(node["children"])
+            else:
+                node["backlinks"] = sorted(incoming.get(node["file"], []))
+
+    attach(tree)
     notes = count(tree, lambda n: True)
     done = count(tree, lambda n: n["done"])
     data = {"tree": tree, "stats": {"notes": notes, "done": done}}
