@@ -164,7 +164,7 @@
 
   function graphHtml() {
     return '<article class="graph"><h1>关联</h1>'
-      + '<p class="lead">笔记之间的引用关系，箭头从一篇指向它引用的笔记。拖动空白处平移，滚轮缩放，拖节点调整位置；悬停高亮，点击直接查看笔记。</p>'
+      + '<p class="lead">笔记之间的引用关系，箭头从一篇指向它引用的笔记。拖动空白处平移，滚轮或双指缩放，拖节点调整位置；点击节点查看笔记（电脑上悬停也行）。</p>'
       + '<div class="graph-wrap"><canvas id="graphCanvas"></canvas>'
       + '<aside class="graph-side" id="graphSide"><p class="muted">悬停或点击一个节点</p></aside></div></article>';
   }
@@ -204,10 +204,14 @@
 
     function rand(seed) { var x = Math.sin(seed) * 10000; return x - Math.floor(x); }
 
+    // 窄屏上画布放不下整张图：在不小于 WW x WH 的虚拟画布里布局，再缩放到刚好装进屏幕
+    var WW = 0, WH = 0;
+
     function layout() {
+      WW = Math.max(W, 640); WH = Math.max(H, 520);
       var cols = Math.ceil(Math.sqrt(groups.length));
       var rows = Math.ceil(groups.length / cols);
-      var cw = W / cols, rh = H / rows;
+      var cw = WW / cols, rh = WH / rows;
       nodes.forEach(function (n, i) {
         var col = n.g % cols, row = Math.floor(n.g / cols);
         n.x = cw * (col + 0.5) + (rand(i * 13.37) - 0.5) * cw * 0.6;
@@ -238,8 +242,8 @@
           l.t.vx -= dx / dist * f; l.t.vy -= dy / dist * f;
         });
         nodes.forEach(function (n) {
-          n.x = Math.max(n.r + 8, Math.min(W - n.r - 8, n.x + n.vx));
-          n.y = Math.max(n.r + 8, Math.min(H - n.r - 8, n.y + n.vy));
+          n.x = Math.max(n.r + 8, Math.min(WW - n.r - 8, n.x + n.vx));
+          n.y = Math.max(n.r + 8, Math.min(WH - n.r - 8, n.y + n.vy));
         });
       }
     }
@@ -256,11 +260,11 @@
 
     function screen(n) { return { x: n.x * view.scale + view.x, y: n.y * view.scale + view.y }; }
     function world(px, py) { return { x: (px - view.x) / view.scale, y: (py - view.y) / view.scale }; }
-    function hit(px, py) {
+    function hit(px, py, slop) {
       for (var i = nodes.length - 1; i >= 0; i--) {
         var pt = screen(nodes[i]);
         var dx = px - pt.x, dy = py - pt.y;
-        if (dx * dx + dy * dy <= Math.pow(nodes[i].r * view.scale + 4, 2)) return nodes[i];
+        if (dx * dx + dy * dy <= Math.pow(nodes[i].r * view.scale + (slop || 4), 2)) return nodes[i];
       }
       return null;
     }
@@ -319,65 +323,152 @@
       ctx.globalAlpha = 1;
       ctx.font = "12px -apple-system, 'PingFang SC', sans-serif";
       ctx.textBaseline = "middle";
+      ctx.lineJoin = "round"; ctx.lineWidth = 3; ctx.strokeStyle = c.surface;
       nodes.forEach(function (n) {
-        var pt = screen(n);
         var dim = active && n !== active && !near[n.f];
+        var focus = active && (n === active || near[n.f]);
+        // 缩小后标签会挤在一起，只留和当前节点相关的、以及连接多的
+        if (!focus && view.scale < 0.7 && degree[n.f] < maxDeg * 0.5) return;
+        var pt = screen(n);
         ctx.globalAlpha = dim ? 0.3 : 1;
         ctx.fillStyle = c.ink;
         ctx.textAlign = "left";
+        ctx.strokeText(n.title, pt.x + n.r * view.scale + 6, pt.y);
         ctx.fillText(n.title, pt.x + n.r * view.scale + 6, pt.y);
       });
       ctx.globalAlpha = 1;
     }
 
+    function narrow() { return window.matchMedia("(max-width: 760px)").matches; }
+
     function showSide(n) {
       var side = document.getElementById("graphSide");
       if (!side) return;
-      if (!n) { side.innerHTML = '<p class="muted">悬停或点击一个节点</p>'; return; }
+      if (!n) { side.innerHTML = '<p class="muted">' + (narrow() ? "点击一个节点" : "悬停或点击一个节点") + '</p>'; return; }
       var note = byFile[n.f];
+      if (narrow()) {
+        // 手机上整篇笔记放在画布下面要滚很远才看得到，只给标题、引用关系和入口
+        side.innerHTML = '<div class="graph-card"><h2>' + esc(note.title) + '</h2>'
+          + (note.scope ? '<p class="scope">' + esc(note.scope.replace(/\[([^\]]*)\]\([^)]*\)/g, '$1')) + '</p>' : '')
+          + refsHtml(note)
+          + '<a class="btn open" href="#/' + encodeURI(n.f) + '">打开笔记</a></div>';
+        return;
+      }
       side.innerHTML = '<article class="article">' + renderMarkdown(note) + '</article>'
         + '<p class="src"><a href="#/' + encodeURI(n.f) + '">打开完整页面</a></p>';
+      window.NoteFigures.init(side);
+    }
+
+    // 缩放并居中到刚好装下所有节点和它们右侧的标签
+    function fit() {
+      var PAD = 20, LABEL = 90;
+      var x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
+      nodes.forEach(function (n) {
+        x0 = Math.min(x0, n.x - n.r); y0 = Math.min(y0, n.y - n.r);
+        x1 = Math.max(x1, n.x + n.r); y1 = Math.max(y1, n.y + n.r);
+      });
+      var bw = Math.max(x1 - x0, 1), bh = Math.max(y1 - y0, 1);
+      var k = Math.min(1.5, (W - 2 * PAD - LABEL) / bw, (H - 2 * PAD) / bh);
+      k = Math.max(0.3, k);
+      view.scale = k;
+      view.x = PAD + (W - 2 * PAD - LABEL - bw * k) / 2 - x0 * k;
+      view.y = (H - bh * k) / 2 - y0 * k;
     }
 
     function resize() {
       var rect = canvas.getBoundingClientRect();
+      var widthChanged = Math.round(rect.width) !== Math.round(W);
       W = rect.width; H = rect.height;
       canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      layout();
+      // 手机滚动时地址栏收放会触发 resize（只有高度变），这时不能重排，否则位置和缩放被重置
+      if (widthChanged) { layout(); fit(); }
       draw();
     }
 
-    canvas.addEventListener("mousemove", function (e) {
+    // 鼠标、触摸、笔统一用 Pointer Events；一根手指拖动，两根手指缩放
+    var pts = {}, gesture = null, TAP = 6;
+
+    function localPoint(e) {
       var rect = canvas.getBoundingClientRect();
-      var px = e.clientX - rect.left, py = e.clientY - rect.top;
-      if (dragging) {
-        var w = world(px, py);
-        dragging.x = w.x - dragging.offX; dragging.y = w.y - dragging.offY;
+      return { x: e.clientX - rect.left, y: e.clientY - rect.top };
+    }
+    function pinchState() {
+      var ids = Object.keys(pts), a = pts[ids[0]], b = pts[ids[1]];
+      return { d: Math.hypot(a.x - b.x, a.y - b.y) || 1, x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 };
+    }
+
+    canvas.addEventListener("pointerdown", function (e) {
+      canvas.setPointerCapture(e.pointerId);
+      pts[e.pointerId] = localPoint(e);
+      if (Object.keys(pts).length === 2) {
+        var p = pinchState();
+        gesture = { kind: "pinch", d: p.d, scale: view.scale, anchor: world(p.x, p.y) };
+        return;
+      }
+      if (Object.keys(pts).length > 2) return;
+      var pt = pts[e.pointerId];
+      var n = hit(pt.x, pt.y, e.pointerType === "mouse" ? 4 : 12);
+      gesture = { kind: n ? "node" : "pan", n: n, sx: pt.x, sy: pt.y, moved: false };
+      if (n) { var w = world(pt.x, pt.y); n.offX = w.x - n.x; n.offY = w.y - n.y; }
+      else { gesture.ox = pt.x - view.x; gesture.oy = pt.y - view.y; }
+    });
+
+    canvas.addEventListener("pointermove", function (e) {
+      var pt = localPoint(e);
+      if (!pts[e.pointerId]) {
+        // 没按下：只有鼠标有悬停
+        if (e.pointerType !== "mouse") return;
+        var h = hit(pt.x, pt.y);
+        if (h !== hovered) { hovered = h; canvas.style.cursor = h ? "pointer" : "grab"; showSide(pinned || hovered); draw(); }
+        return;
+      }
+      pts[e.pointerId] = pt;
+      if (!gesture) return;
+      if (gesture.kind === "pinch") {
+        if (Object.keys(pts).length < 2) return;
+        var p = pinchState();
+        var next = Math.min(3, Math.max(0.3, gesture.scale * p.d / gesture.d));
+        view.scale = next;
+        view.x = p.x - gesture.anchor.x * next;
+        view.y = p.y - gesture.anchor.y * next;
         draw(); return;
       }
-      if (panning) { view.x = px - panning.x; view.y = py - panning.y; draw(); return; }
-      var n = hit(px, py);
-      if (n !== hovered) { hovered = n; canvas.style.cursor = n ? "pointer" : "grab"; showSide(pinned || hovered); draw(); }
+      if (!gesture.moved && Math.hypot(pt.x - gesture.sx, pt.y - gesture.sy) < TAP) return;
+      gesture.moved = true;
+      if (gesture.kind === "node") {
+        var w = world(pt.x, pt.y);
+        gesture.n.x = w.x - gesture.n.offX; gesture.n.y = w.y - gesture.n.offY;
+      } else {
+        view.x = pt.x - gesture.ox; view.y = pt.y - gesture.oy;
+      }
+      draw();
     });
-    canvas.addEventListener("mousedown", function (e) {
-      var rect = canvas.getBoundingClientRect();
-      var px = e.clientX - rect.left, py = e.clientY - rect.top;
-      var n = hit(px, py);
-      if (n) { var w = world(px, py); dragging = n; dragging.offX = w.x - n.x; dragging.offY = w.y - n.y; }
-      else panning = { x: px - view.x, y: py - view.y };
-    });
-    window.addEventListener("mouseup", function () {
-      if (dragging) { pinned = dragging; showSide(pinned); }
-      dragging = null; panning = null; draw();
-    });
+
+    function release(e) {
+      if (!pts[e.pointerId]) return;
+      delete pts[e.pointerId];
+      var g = gesture;
+      if (Object.keys(pts).length > 0) {
+        // 缩放抬起一根手指后不要接着当作平移，等全部抬起
+        gesture = { kind: "none" };
+        return;
+      }
+      gesture = null;
+      if (!g || g.kind === "pinch" || g.kind === "none") { draw(); return; }
+      if (g.kind === "node") { pinned = g.n; showSide(pinned); }
+      else if (!g.moved && e.type === "pointerup") { pinned = null; showSide(hovered); }
+      draw();
+    }
+    canvas.addEventListener("pointerup", release);
+    canvas.addEventListener("pointercancel", release);
+
     canvas.addEventListener("wheel", function (e) {
       e.preventDefault();
-      var rect = canvas.getBoundingClientRect();
-      var px = e.clientX - rect.left, py = e.clientY - rect.top;
-      var next = Math.min(3, Math.max(0.4, view.scale * (e.deltaY < 0 ? 1.1 : 0.9)));
-      view.x = px - (px - view.x) * (next / view.scale);
-      view.y = py - (py - view.y) * (next / view.scale);
+      var pt = localPoint(e);
+      var next = Math.min(3, Math.max(0.3, view.scale * (e.deltaY < 0 ? 1.1 : 0.9)));
+      view.x = pt.x - (pt.x - view.x) * (next / view.scale);
+      view.y = pt.y - (pt.y - view.y) * (next / view.scale);
       view.scale = next;
       draw();
     }, { passive: false });
@@ -429,6 +520,7 @@
     else if (query && !file) main.innerHTML = searchHtml(query);
     else if (byFile[file]) main.innerHTML = noteHtml(byFile[file]);
     else main.innerHTML = homeHtml();
+    window.NoteFigures.init(main);
     markCurrent();
     if (file) window.scrollTo(0, 0);
   }

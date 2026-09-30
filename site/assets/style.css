@@ -138,10 +138,18 @@ main:has(.graph) { max-width: none; }
 }
 .graph-side .article h1 { font-size: 20px; }
 .graph-side .muted { color: var(--muted); font-size: 13px; margin: 14px 0; }
+#graphCanvas { touch-action: none; -webkit-tap-highlight-color: transparent; }
+.graph-card h2 { font-size: 17px; margin: 10px 0 6px; }
+.graph-card .scope { margin: 6px 0 10px; }
+.graph-card .refs { margin-top: 10px; }
+.graph-card .btn.open { display: block; margin-top: 14px; padding: 9px 12px; text-align: center; color: var(--accent); border-color: var(--accent); }
 @media (max-width: 760px) {
-  .graph-wrap { flex-direction: column; height: auto; }
-  #graphCanvas { height: 420px; }
-  .graph-side { width: auto; border-left: 0; border-top: 1px solid var(--border); }
+  .graph-wrap { flex-direction: column; height: auto; min-height: 0; }
+  #graphCanvas { flex: none; width: 100%; height: 60vh; height: 60svh; min-height: 320px; }
+  .graph-side { width: auto; border-left: 0; border-top: 1px solid var(--border); padding: 4px 16px 16px; overflow: visible; }
+  main:has(.graph) { padding: 16px 12px 48px; }
+  .graph h1 { font-size: 22px; }
+  .graph .lead { font-size: 13.5px; }
 }
 .src { margin-top: 36px; font-size: 12.5px; color: var(--muted); }
 
@@ -160,6 +168,134 @@ main:has(.graph) { max-width: none; }
 .recent { margin-top: 28px; }
 .recent li { font-size: 13.5px; }
 
+/* ---- 笔记里的图（交互见 figures.js） ---- */
+.article .fig {
+  margin: 16px 0; padding: 14px 16px; border: 1px solid var(--border); border-radius: 12px;
+  background: var(--surface); font-size: 13.5px;
+}
+.fig-cap { margin: 0 0 10px; color: var(--muted); font-size: 12.5px; }
+.fig-hint { color: var(--muted); font-size: 12.5px; }
+.fig .tag-a, .fig .tag-b, .fig .tag-c, .fig .tag-d { border-radius: 4px; padding: 0 4px; }
+.fig .tag-a { background: rgba(42, 120, 214, 0.16); }
+.fig .tag-b { background: rgba(27, 175, 122, 0.18); }
+.fig .tag-c { background: rgba(230, 140, 30, 0.20); }
+.fig .tag-d { background: rgba(150, 90, 220, 0.18); }
+
+/* 节点与连线 */
+.fig-flow { display: flex; align-items: center; overflow-x: auto; padding: 4px 2px; }
+.fig-box {
+  flex: none; min-width: 86px; padding: 7px 10px; border: 1.5px solid var(--border); border-radius: 10px;
+  background: var(--page); text-align: center; line-height: 1.35; white-space: nowrap;
+  transition: opacity .2s, border-color .2s, box-shadow .2s;
+}
+.fig-box small { display: block; color: var(--muted); font-size: 11.5px; }
+.fig-wire { flex: 1 0 18px; height: 2px; background: var(--border); position: relative; transition: background .2s; }
+.fig-wire small {
+  position: absolute; left: 50%; top: -18px; transform: translateX(-50%);
+  white-space: nowrap; color: var(--muted); font-size: 11px;
+}
+.fig-flow.has-below { padding-bottom: 72px; }
+.fig-drop { position: relative; flex: none; }
+.fig-below {
+  position: absolute; top: 100%; left: 50%; transform: translateX(-50%);
+  display: flex; flex-direction: column; align-items: center;
+}
+.fig-vwire { width: 2px; height: 18px; background: var(--border); transition: background .2s; }
+
+/* 分步演示 */
+.fig-bar { display: flex; align-items: center; gap: 8px; margin: 12px 0 8px; flex-wrap: wrap; }
+.fig-dots { display: flex; gap: 4px; flex-wrap: wrap; flex: 1; }
+.fig-btn, .fig-dot {
+  padding: 3px 10px; border: 1px solid var(--border); border-radius: 999px; background: transparent;
+  color: var(--ink-2); font: inherit; font-size: 12.5px; cursor: pointer;
+}
+.fig-btn:hover:not(:disabled), .fig-dot:hover { border-color: var(--accent); color: var(--accent); }
+.fig-btn:disabled { opacity: .4; cursor: default; }
+.fig-dot.cur { background: var(--accent); border-color: var(--accent); color: #fff; }
+.fig-list { margin: 0; padding-left: 1.4em; }
+.fig-list > li { margin: 6px 0; }
+.fig-steps.js .fig-list { list-style: none; padding: 10px 12px; border-radius: 8px; background: var(--surface-2); min-height: 4.5em; }
+.fig-steps.js .fig-list > li { display: none; margin: 0; }
+.fig-steps.js .fig-list > li.cur { display: block; }
+.fig-steps.js [data-node] { opacity: .35; }
+.fig-steps.js .fig-box.on { opacity: 1; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(42, 120, 214, 0.15); }
+.fig-steps.js .fig-wire.on, .fig-steps.js .fig-vwire.on { opacity: 1; background: var(--accent); }
+.fig-steps.js .fig-wire.on small { color: var(--accent); }
+.fig-hdr { margin: 8px 0 2px !important; font-size: 12.5px !important; }
+.fig-hdr td, .fig-hdr th { padding: 3px 10px !important; }
+
+/* 联动高亮 */
+.fig-hl.js [data-key]:not(.fig-note) { cursor: pointer; transition: background .15s, border-color .15s; }
+.fig-hl.js .on:not(.fig-note) { border-color: var(--accent) !important; background: rgba(42, 120, 214, 0.12) !important; }
+.fig-hl.js .fig-note { display: none; }
+.fig-hl.js .fig-note.on { display: block; }
+.fig-hl.js.has-on .fig-hint { display: none; }
+.fig-notes { margin-top: 10px; padding: 8px 12px; border-radius: 8px; background: var(--surface-2); min-height: 3.2em; }
+.fig-notes p { margin: 2px 0; }
+
+/* OSI 与 TCP/IP 对照 */
+.fig-osi { display: grid; grid-template-columns: 1fr 1.1fr 1.6fr; gap: 4px; }
+.fig-osi > div {
+  padding: 6px 10px; border: 1px solid var(--border); border-radius: 8px; background: var(--page);
+  display: flex; align-items: center; justify-content: center; text-align: center; line-height: 1.35;
+}
+.fig-osi > .th { border: 0; background: none; color: var(--muted); font-size: 12px; padding: 0 4px 2px; }
+.fig-osi .c1 { grid-column: 1; } .fig-osi .c2 { grid-column: 2; font-weight: 600; } .fig-osi .c3 { grid-column: 3; color: var(--ink-2); font-size: 12.5px; }
+.fig-osi .span2 { grid-row: span 2; } .fig-osi .span3 { grid-row: span 3; }
+
+/* 封装 */
+.fig-encap { display: grid; grid-template-columns: 4.6em 3.6em 3.6em 3.6em minmax(6.5em, 1fr) 3.2em 5.2em; gap: 6px 2px; align-items: center; }
+.fig-encap > .lv { grid-column: 1; color: var(--ink-2); font-size: 12.5px; }
+.fig-encap > .pdu { grid-column: 7; color: var(--muted); font-size: 12px; padding-left: 8px; }
+.fig-encap > .seg {
+  padding: 5px 2px; border: 1px solid var(--border); border-radius: 5px; text-align: center; font-size: 12px; cursor: help;
+}
+.fig-encap .g2 { grid-column: 2; } .fig-encap .g3 { grid-column: 3; } .fig-encap .g4 { grid-column: 4; }
+.fig-encap .g5 { grid-column: 5; } .fig-encap .g6 { grid-column: 6; } .fig-encap .g2-6 { grid-column: 2 / 7; }
+.fig-encap .h-eth, .fig-encap .t-eth { background: rgba(150, 90, 220, 0.18); }
+.fig-encap .h-ip { background: rgba(230, 140, 30, 0.20); }
+.fig-encap .h-tcp { background: rgba(27, 175, 122, 0.18); }
+.fig-encap .data { background: rgba(42, 120, 214, 0.16); }
+.fig-encap .bits { font-family: ui-monospace, Menlo, monospace; letter-spacing: 1px; color: var(--muted); cursor: default; }
+.fig-encap .dir { grid-column: 1 / -1; color: var(--muted); font-size: 12px; }
+
+/* SVG 图 */
+.fig svg { display: block; width: 100%; max-width: 440px; margin: 0 auto; color: var(--ink-2); }
+.fig svg text { fill: currentColor; font-size: 12px; }
+
+/* RTT 计算器 */
+.rtt-ctl { display: flex; flex-wrap: wrap; gap: 10px 20px; align-items: center; }
+.rtt-ctl label { display: flex; align-items: center; gap: 6px; }
+.rtt-ctl input[type="range"] { width: 150px; accent-color: var(--accent); }
+.rtt-ctl select { font: inherit; font-size: 12.5px; padding: 2px 4px; border: 1px solid var(--border); border-radius: 6px; background: var(--page); color: var(--ink); }
+.rtt-ctl b { min-width: 4em; font-variant-numeric: tabular-nums; }
+.rtt-hint, .rtt-note { margin: 6px 0 !important; color: var(--muted); font-size: 12px; }
+.rtt-rows { margin: 10px 0 6px; }
+.rtt-row { display: grid; grid-template-columns: 9.5em 1fr 5.5em; gap: 8px; align-items: center; margin: 5px 0; }
+.rtt-name { font-size: 12.5px; }
+.rtt-bar { display: flex; height: 16px; border-radius: 4px; overflow: hidden; background: var(--surface-2); }
+.rtt-bar span { height: 100%; transition: width .2s; }
+.rtt-total { text-align: right; font-variant-numeric: tabular-nums; font-weight: 600; }
+.rtt-total small { display: block; font-weight: 400; color: var(--muted); font-size: 11px; }
+.rtt-legend { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 12px; color: var(--ink-2); }
+.rtt-legend span::before { content: ""; display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 4px; vertical-align: -1px; }
+.s-tcp, .rtt-legend .k-tcp::before { background: #1baf7a; }
+.s-tls, .rtt-legend .k-tls::before { background: #e68c1e; }
+.s-quic, .rtt-legend .k-quic::before { background: #965adc; }
+.s-req, .rtt-legend .k-req::before { background: #2a78d6; }
+.s-xfer, .rtt-legend .k-xfer::before { background: #8fb8ea; }
+@media (max-width: 760px) {
+  .rtt-row { grid-template-columns: 7em 1fr 4.8em; }
+  .fig-encap { grid-template-columns: 3.6em 3em 3em 3em minmax(4.5em, 1fr) 2.6em 3.6em; font-size: 11px; }
+}
+
+/* 自测问答 */
+.article details { margin: 8px 0; padding: 8px 12px; border: 1px solid var(--border); border-radius: 10px; background: var(--surface); }
+.article details summary { cursor: pointer; font-weight: 600; }
+.article details[open] summary { margin-bottom: 4px; }
+.article details > :last-child { margin-bottom: 0; }
+.article blockquote strong { color: var(--ink); }
+
 .search-result { padding: 12px 0; border-bottom: 1px solid var(--border); }
 .search-result h2 { font-size: 16px; margin: 0; }
 .search-result p { margin: 3px 0 0; color: var(--ink-2); font-size: 13.5px; }
@@ -168,6 +304,7 @@ main:has(.graph) { max-width: none; }
 @media (max-width: 760px) {
   .btn.icon { display: inline-block; }
   .top #repoLink, .top #themeBtn { display: none; }
+  .top { gap: 8px; padding: 0 10px; }
   .toc {
     position: fixed; z-index: 40; top: 0; left: 0; height: 100vh; width: min(80vw, 320px);
     transform: translateX(-105%); transition: transform .2s; box-shadow: 0 0 24px var(--shadow);
