@@ -248,7 +248,7 @@ main:has(.graph) { max-width: none; }
 .fig-encap > .lv { grid-column: 1; color: var(--ink-2); font-size: 12.5px; }
 .fig-encap > .pdu { grid-column: 7; color: var(--muted); font-size: 12px; padding-left: 8px; }
 .fig-encap > .seg {
-  padding: 5px 2px; border: 1px solid var(--border); border-radius: 5px; text-align: center; font-size: 12px; cursor: help;
+  padding: 5px 2px; border: 1px solid var(--border); border-radius: 5px; text-align: center; font-size: 12px;
 }
 .fig-encap .g2 { grid-column: 2; } .fig-encap .g3 { grid-column: 3; } .fig-encap .g4 { grid-column: 4; }
 .fig-encap .g5 { grid-column: 5; } .fig-encap .g6 { grid-column: 6; } .fig-encap .g2-6 { grid-column: 2 / 7; }
@@ -256,7 +256,7 @@ main:has(.graph) { max-width: none; }
 .fig-encap .h-ip { background: rgba(230, 140, 30, 0.20); }
 .fig-encap .h-tcp { background: rgba(27, 175, 122, 0.18); }
 .fig-encap .data { background: rgba(42, 120, 214, 0.16); }
-.fig-encap .bits { font-family: ui-monospace, Menlo, monospace; letter-spacing: 1px; color: var(--muted); cursor: default; }
+.fig-encap .bits { font-family: ui-monospace, Menlo, monospace; letter-spacing: 1px; color: var(--muted); }
 .fig-encap .dir { grid-column: 1 / -1; color: var(--muted); font-size: 12px; }
 
 /* SVG 图 */

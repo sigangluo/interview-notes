@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """用社招 JD 统计每个目录项被提到的比例，生成 README 里的图。
 
-    python3 tools/scripts/jd_analysis.py [数据目录]      # 默认 ../../求职/data
+    python3 tools/scripts/jd_analysis.py [数据目录]      # 默认读仓库同级的 求职/data
 
 数据目录的格式是 <公司>/技术.csv、<公司>/产品.csv，来自 cn-tech-jobs 看板
 （https://sigangluo.github.io/cn-tech-jobs/ 页面底部可下载各公司 CSV）。
@@ -24,7 +24,7 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt  # noqa: E402
 
-TOOLS = os.path.dirname(os.path.abspath(__file__))
+TOOLS = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 ROOT = os.path.dirname(TOOLS)
 OUT = os.path.join(TOOLS, "docs", "images")
 MIN_JOBS = 8
@@ -85,7 +85,10 @@ ITEMS = [
     ("ai-dev", "模型接入与部署", "API调用", ("AI 应用开发",), r"模型 ?API|LLM ?API|模型接口|OpenAI|流式|结构化输出|Function ?Call"),
     ("ai-dev", "模型接入与部署", "模型网关与路由", ("AI 应用开发",), r"网关|模型路由|模型选型|多模型"),
     ("ai-dev", "模型接入与部署", "私有化部署", ("AI 应用开发",), r"vLLM|SGLang|Ollama|私有化|本地部署|模型部署|推理部署|推理服务"),
-    ("ai-dev", "Prompt与上下文工程", "Prompt与上下文工程", ("AI 应用开发",), r"Prompt|提示词|上下文工程|Context Engineering|上下文管理"),
+    ("ai-dev", "Prompt与上下文工程", "Prompt设计", ("AI 应用开发",), r"Prompt|提示词|Few-?shot|思维链|CoT"),
+    ("ai-dev", "Prompt与上下文工程", "上下文工程", ("AI 应用开发",), r"上下文工程|Context Engineering|上下文管理|上下文构建|上下文窗口|长上下文"),
+    ("ai-dev", "Prompt与上下文工程", "上下文压缩与缓存", ("AI 应用开发",), r"上下文压缩|Token ?压缩|Prompt ?Cach|上下文缓存"),
+    ("ai-dev", "Prompt与上下文工程", "Prompt迭代与管理", ("AI 应用开发",), r"(Prompt|提示词) ?(调优|优化|迭代|管理)|DSPy|自动优化"),
     ("ai-dev", "RAG", "数据接入与解析", ("AI 应用开发",), r"文档解析|数据解析|OCR|抓取|爬虫|ETL"),
     ("ai-dev", "RAG", "切分与向量化", ("AI 应用开发",), r"切分|分块|Chunk|[Ee]mbedding|向量化"),
     ("ai-dev", "RAG", "向量数据库", ("AI 应用开发",), r"向量数据库|向量库|向量检索|Milvus|pgvector|FAISS|Faiss"),
@@ -94,7 +97,7 @@ ITEMS = [
     ("ai-dev", "Agent", "核心范式", ("AI 应用开发",), r"ReAct|规划|Planning|CoT|思维链|反思"),
     ("ai-dev", "Agent", "工作流编排", ("AI 应用开发",), r"工作流|Workflow|编排"),
     ("ai-dev", "Agent", "工具调用与MCP", ("AI 应用开发",), r"Function ?Call|工具调用|Tool ?(Use|Call)|MCP"),
-    ("ai-dev", "Agent", "记忆与上下文管理", ("AI 应用开发",), r"记忆|Memory"),
+    ("ai-dev", "Agent", "记忆", ("AI 应用开发",), r"记忆|Memory"),
     ("ai-dev", "Agent", "多Agent", ("AI 应用开发",), r"多 ?Agent|多智能体|Multi-?Agent|A2A"),
     ("ai-dev", "Agent", "编码Agent", ("AI 应用开发",), r"AI ?Coding|代码生成|Coding Agent|Claude Code|Cursor"),
     ("ai-dev", "Agent", "Skills与方法论", ("AI 应用开发",), r"Skill|AGENTS\.md|规范驱动|Spec"),
@@ -239,7 +242,7 @@ def plot_items(groups, fig_key, results):
 
 
 def main():
-    data_dir = sys.argv[1] if len(sys.argv) > 1 else os.path.join(ROOT, "..", "..", "求职", "data")
+    data_dir = sys.argv[1] if len(sys.argv) > 1 else os.path.join(ROOT, "..", "求职", "data")
     os.makedirs(OUT, exist_ok=True)
     setup()
     groups = load(data_dir)

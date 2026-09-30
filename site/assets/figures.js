@@ -49,11 +49,11 @@
     go(0);
   }
 
-  // 联动高亮：.fig-hl 下 data-key 相同的元素一起高亮；悬停预览，点击固定。
-  // .fig-note[data-key] 只在对应的 key 被选中时显示，.fig-hint 在没有选中时显示
+  // 联动高亮：点击一个带 data-key 的元素，所有 data-key 相同的元素一起高亮，再点一次取消。
+  // 只响应点击，不用悬停。.fig-note[data-key] 只在对应的 key 被选中时显示，.fig-hint 在没有选中时显示
   function highlight(fig) {
     var keyed = fig.querySelectorAll("[data-key]");
-    var pinned = fig.getAttribute("data-default") || null;
+    var selected = fig.getAttribute("data-default") || null;
     function show(k) {
       Array.prototype.forEach.call(keyed, function (el) {
         el.classList.toggle("on", !!k && el.getAttribute("data-key") === k);
@@ -63,12 +63,10 @@
     Array.prototype.forEach.call(keyed, function (el) {
       if (el.classList.contains("fig-note")) return;
       var k = el.getAttribute("data-key");
-      el.addEventListener("mouseenter", function () { show(k); });
-      el.addEventListener("mouseleave", function () { show(pinned); });
-      el.addEventListener("click", function () { pinned = pinned === k ? null : k; show(pinned); });
+      el.addEventListener("click", function () { selected = selected === k ? null : k; show(selected); });
     });
     fig.classList.add("js");
-    show(pinned);
+    show(selected);
   }
 
   // RTT 耗时计算器：比较不同协议从发起连接到收完响应要多久。
@@ -115,8 +113,7 @@
       var max = Math.max.apply(null, data.map(function (d) { return d.total; }));
       rows.innerHTML = data.map(function (d) {
         var bar = d.segs.map(function (s) {
-          return '<span class="s-' + s.cls + '" style="width:' + (s.ms / max * 100) + '%" title="'
-            + s.label + '：' + s.ms.toFixed(1) + ' ms"></span>';
+          return '<span class="s-' + s.cls + '" style="width:' + (s.ms / max * 100) + '%"></span>';
         }).join("");
         return '<div class="rtt-row"><span class="rtt-name">' + d.p.name + '</span>'
           + '<span class="rtt-bar">' + bar + '</span>'
