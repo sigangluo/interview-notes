@@ -1,0 +1,8 @@
+.DS_Store
+__pycache__/
+*.pyc
+.env
+*.token
+
+# 简历原文、真实薪资、不想公开的面经等隐私内容
+*.private.md
