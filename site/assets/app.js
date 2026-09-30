@@ -60,8 +60,7 @@
     var toc = document.getElementById("toc");
     var done = count(tree, function (n) { return n.done; });
     var total = count(tree, function () { return true; });
-    toc.innerHTML = '<a class="graph-link" href="#/graph">关联</a>'
-      + '<div class="progress">' + done + ' / ' + total + ' 篇已写'
+    toc.innerHTML = '<div class="progress">' + done + ' / ' + total + ' 篇已写'
       + '<div class="bar"><span style="width:' + (total ? done / total * 100 : 0) + '%"></span></div></div>'
       + tocHtml(tree);
     markCurrent();
