@@ -4,7 +4,7 @@
   "use strict";
 
   var REPO = "https://github.com/sigangluo/interview-notes";
-  var tree = [], byFile = {}, stars = {};
+  var tree = [], byFile = {};
 
   function esc(s) {
     return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
@@ -25,16 +25,6 @@
     var total = 0;
     nodes.forEach(function (n) { total += n.children ? count(n.children, pred) : (pred(n) ? 1 : 0); });
     return total;
-  }
-
-  function loadStars(text) {
-    // ★ 标注写在 README 的目录树里（「数据库基础 ★」这种行），这里提取出来
-    var inTree = false;
-    text.split("\n").forEach(function (line) {
-      if (line.indexOf("```") === 0) { inTree = !inTree; return; }
-      var m = inTree && line.match(/([A-Za-z0-9\u4e00-\u9fa5][A-Za-z0-9.\-\u4e00-\u9fa5]*)\s+★/);
-      if (m) stars[m[1]] = true;
-    });
   }
 
   // ---- 主题 ----
@@ -62,8 +52,7 @@
       var hit = !query || (n.title + n.scope + n.body).toLowerCase().indexOf(query) >= 0;
       if (!hit) return "";
       return '<a class="item' + (hit && query ? ' hit' : '') + '" href="#/' + encodeURI(n.file) + '">'
-        + esc(n.title) + (stars[n.title] ? '<span class="star">★</span>' : '')
-        + (n.done ? '<span class="done">●</span>' : '') + '</a>';
+        + esc(n.title) + (n.done ? '<span class="done">●</span>' : '') + '</a>';
     }).join("");
   }
 
@@ -149,11 +138,45 @@
       return "<h2>" + esc(sec.title) + "</h2><ul class=\"sec-list\">" + items + "</ul>";
     }).join("");
     return '<article class="home"><h1>面试复习笔记</h1>'
-      + '<p class="lead">面向 AI 产品、全栈开发、AI 应用开发三类岗位。★ 是社招 JD 里出现比例 ≥ 40% 的高频项，'
-      + '<span class="done">●</span> 表示已经写了内容。</p>'
+      + '<p class="lead">面向 AI 产品、全栈开发、AI 应用开发三类岗位。<span class="done">●</span> 表示已经写了内容。</p>'
       + '<div class="stats"><div class="stat"><b>' + total + '</b><span>篇笔记</span></div>'
       + '<div class="stat"><b>' + done + '</b><span>篇已写内容</span></div></div>'
       + sections + '<p class="src">目录设计的依据见 <a href="' + REPO + '#readme">README</a>。</p></article>';
+  }
+
+  // ---- 关联图：当前笔记在中心，连到它提及的和提及它的笔记 ----
+
+  function related(note) {
+    var out = note.links.filter(function (f) { return byFile[f]; });
+    var back = Object.keys(byFile).filter(function (f) { return byFile[f].links.indexOf(note.file) >= 0 && out.indexOf(f) < 0; });
+    return out.concat(back);
+  }
+
+  function graphHtml(note) {
+    var rel = related(note);
+    if (!rel.length) return "";
+    var w = 640, h = 150 + Math.max(0, rel.length - 2) * 36, cx = w / 2, cy = h / 2;
+    var nodes = rel.map(function (f, i) {
+      var angle = -Math.PI / 2 + (2 * Math.PI * i) / rel.length;
+      var rx = Math.min(250, w / 2 - 70), ry = h / 2 - 30;
+      return { f: f, x: cx + rx * Math.cos(angle), y: cy + ry * Math.sin(angle), back: note.links.indexOf(f) < 0 };
+    });
+    var lines = nodes.map(function (nd) {
+      return '<line x1="' + cx + '" y1="' + cy + '" x2="' + nd.x + '" y2="' + nd.y + '"/>';
+    }).join("");
+    var circles = nodes.map(function (nd) {
+      var title = byFile[nd.f].title;
+      var labelW = Math.max(44, title.length * 13);
+      return '<a href="#/' + encodeURI(nd.f) + '">'
+        + '<rect x="' + (nd.x - labelW / 2) + '" y="' + (nd.y - 14) + '" width="' + labelW + '" height="40" fill="transparent"/>'
+        + '<circle cx="' + nd.x + '" cy="' + nd.y + '" r="6"/>'
+        + '<text x="' + nd.x + '" y="' + (nd.y + 20) + '" text-anchor="middle">' + esc(title) + '</text></a>';
+    }).join("");
+    return '<div class="graph"><h2>关联</h2><svg viewBox="0 0 ' + w + ' ' + h + '">'
+      + lines + circles
+      + '<circle class="self" cx="' + cx + '" cy="' + cy + '" r="7"/>'
+      + '<text class="self" x="' + cx + '" y="' + (cy - 16) + '" text-anchor="middle">' + esc(note.title) + '</text>'
+      + '</svg></div>';
   }
 
   function noteHtml(note) {
@@ -163,6 +186,7 @@
     crumbs.unshift('<a href="#/">全部</a>');
     return '<nav class="crumbs">' + crumbs.join(" / ") + '</nav>'
       + '<article class="article">' + renderMarkdown(note) + '</article>'
+      + graphHtml(note)
       + '<p class="src">源文件：<a href="' + REPO + '/blob/main/' + encodeURI(note.file) + '">' + esc(note.file) + '</a></p>';
   }
 
@@ -234,13 +258,7 @@
     render();
   });
 
-  Promise.all([
-    fetch("data/notes.json").then(function (r) { return r.json(); }),
-    fetch(REPO.replace("github.com", "raw.githubusercontent.com") + "/main/README.md").then(function (r) { return r.ok ? r.text() : ""; })
-  ]).then(function (res) {
-    loadStars(res[1]);
-    start(res[0]);
-  }).catch(function () {
+  fetch("data/notes.json").then(function (r) { return r.json(); }).then(start).catch(function () {
     document.getElementById("main").innerHTML = '<p class="loading">数据加载失败。请先运行 <code>python3 tools/scripts/build_site.py</code> 生成 site/data/notes.json，再用本地服务器打开（不能直接双击 html）。</p>';
   });
 })();

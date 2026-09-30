@@ -14,6 +14,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)
 SECTIONS = ["技术", "产品", "面经与复盘"]
 PLACEHOLDER = "（待补充）"
 SCOPE_RE = re.compile(r"^> 范围：(.+)$", re.M)
+LINK_RE = re.compile(r"\[[^\]]*\]\(([^)]+\.md)\)")
 
 
 def walk(directory):
@@ -32,11 +33,13 @@ def walk(directory):
                 text = f.read()
             title = re.match(r"^# (.+)", text).group(1).strip()
             scope = SCOPE_RE.search(text)
+            file = os.path.relpath(path, ROOT)
             nodes.append({
                 "title": title,
-                "file": os.path.relpath(path, ROOT),
+                "file": file,
                 "scope": scope.group(1).strip() if scope else "",
                 "done": PLACEHOLDER not in text,
+                "links": links_of(text, file),
                 "body": text,
             })
     folders = [n for n in nodes if "children" in n]
@@ -44,6 +47,20 @@ def walk(directory):
     readme = [n for n in files if os.path.basename(n["file"]) == "README.md"]
     rest = [n for n in files if n not in readme]
     return folders + readme + rest
+
+
+def links_of(text, file):
+    """笔记正文里指向其他笔记的相对链接，解析成仓库内的文件路径。"""
+    base = os.path.dirname(file)
+    found = []
+    for href in LINK_RE.findall(text):
+        href = href.split("#")[0]
+        if re.match(r"^[a-z]+:", href):
+            continue
+        target = os.path.normpath(os.path.join(base, href))
+        if target != file and os.path.exists(os.path.join(ROOT, target)):
+            found.append(target)
+    return sorted(set(found))
 
 
 def count(nodes, key):
