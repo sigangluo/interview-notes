@@ -9,10 +9,10 @@
   // 在样式加载前应用已保存的主题，避免闪一下
   try { var t = localStorage.getItem('notes-theme'); if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t; } catch (e) {}
 </script>
-<link rel="stylesheet" href="assets/style.css">
+<link rel="stylesheet" href="assets/style.css?v=20261007">
 <script src="https://cdn.jsdelivr.net/npm/marked@15/marked.min.js"></script>
-<script src="assets/figures.js" defer></script>
-<script src="assets/app.js" defer></script>
+<script src="assets/figures.js?v=20261002" defer></script>
+<script src="assets/app.js?v=20261002" defer></script>
 </head>
 <body>
 <header class="top">

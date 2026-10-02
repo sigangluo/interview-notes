@@ -39,20 +39,24 @@
 
   // ---- 目录 ----
 
-  function tocHtml(nodes) {
+  function tocHtml(nodes, depth) {
+    depth = depth || 0;
     var query = document.getElementById("search").value.trim().toLowerCase();
     return nodes.map(function (n) {
       if (n.children) {
-        var body = tocHtml(n.children);
+        var body = tocHtml(n.children, depth + 1);
         if (query && body.indexOf('class="item hit') < 0) return "";
         var collapsed = query ? "" : " collapsed";
-        return '<div class="toc-sec' + collapsed + '"><button class="toc-h" type="button"><span class="caret">▼</span>'
-          + esc(n.title) + '</button><div class="toc-body">' + body + '</div></div>';
+        var total = count([n], function () { return true; });
+        return '<div class="toc-sec depth-' + depth + collapsed + '"><button class="toc-h" type="button"><span class="caret">›</span>'
+          + '<span class="toc-label">' + esc(n.title) + '</span><span class="toc-count">' + total + '</span>'
+          + '</button><div class="toc-body">' + body + '</div></div>';
       }
       var hit = !query || (n.title + n.scope + n.body).toLowerCase().indexOf(query) >= 0;
       if (!hit) return "";
       return '<a class="item' + (hit && query ? ' hit' : '') + '" href="#/' + encodeURI(n.file) + '">'
-        + esc(n.title) + (n.done ? '<span class="done">●</span>' : '') + '</a>';
+        + '<span class="item-mark"></span><span class="item-label">' + esc(n.title) + '</span>'
+        + (n.done ? '<span class="done">已写</span>' : '') + '</a>';
     }).join("");
   }
 
@@ -62,7 +66,7 @@
     var total = count(tree, function () { return true; });
     toc.innerHTML = '<div class="progress">' + done + ' / ' + total + ' 篇已写'
       + '<div class="bar"><span style="width:' + (total ? done / total * 100 : 0) + '%"></span></div></div>'
-      + tocHtml(tree);
+      + tocHtml(tree, 0);
     markCurrent();
   }
 
