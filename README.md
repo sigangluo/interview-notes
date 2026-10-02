@@ -30,7 +30,7 @@
 
 ```bash
 pip install matplotlib
-python3 tools/scripts/jd_analysis.py [数据目录]    # 默认 ../求职/data，格式为 <公司>/技术.csv、<公司>/产品.csv
+python3 tools/scripts/jd_analysis.py [数据目录]    # 默认 ../互联网社招/data，格式为 <公司>/技术.csv、<公司>/产品.csv
 ```
 
 ### AI 已经是各类岗位的默认要求

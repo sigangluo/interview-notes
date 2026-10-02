@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """用社招 JD 统计每个目录项被提到的比例，生成 README 里的图。
 
-    python3 tools/scripts/jd_analysis.py [数据目录]      # 默认 ../求职/data
+    python3 tools/scripts/jd_analysis.py [数据目录]      # 默认 ../互联网社招/data
 
 数据目录的格式是 <公司>/技术.csv、<公司>/产品.csv，来自 cn-tech-jobs 看板
 （https://sigangluo.github.io/cn-tech-jobs/ 页面底部可下载各公司 CSV）。
@@ -242,7 +242,7 @@ def plot_items(groups, fig_key, results):
 
 
 def main():
-    data_dir = sys.argv[1] if len(sys.argv) > 1 else os.path.join(ROOT, "..", "求职", "data")
+    data_dir = sys.argv[1] if len(sys.argv) > 1 else os.path.join(ROOT, "..", "互联网社招", "data")
     os.makedirs(OUT, exist_ok=True)
     setup()
     groups = load(data_dir)

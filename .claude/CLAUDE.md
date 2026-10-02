@@ -18,7 +18,7 @@
 
 ### 1. 收集参考资料
 
-- **从哪找**：技术笔记先从 `../项目/github-fullstack-topk/`、`../项目/github-ai-topk/` 两份项目图谱里按分类和关键词筛；再上网补图谱之外的资料（经典教材、课程、中文面试资料、官方文档、规范原文）。考点的侧重可以参考 `../求职/data` 里的 JD。
+- **从哪找**：技术笔记先从 `../项目/github-fullstack-topk/`、`../项目/github-ai-topk/` 两份项目图谱里按分类和关键词筛；再上网补图谱之外的资料（经典教材、课程、中文面试资料、官方文档、规范原文）。考点的侧重可以参考 `../互联网社招/data` 里的 JD。
 - **放在哪**：`../参考/`，在 `面试/` 仓库之外，约定见 `../参考/README.md`。
   - 要克隆的仓库加进 `repos.txt`，运行 `./sync.sh`，浅克隆到 `repos/<owner>/<repo>/`，一个仓库只存一份，多篇笔记共用。
   - 规范、标准、论文等原文放 `docs/<类别>/`。
@@ -113,7 +113,7 @@
 ## 统计图
 
 ```bash
-MPLCONFIGDIR=/tmp/mpl python3 tools/scripts/jd_analysis.py    # 读 ../求职/data，写 tools/docs/images/*.png
+MPLCONFIGDIR=/tmp/mpl python3 tools/scripts/jd_analysis.py    # 读 ../互联网社招/data，写 tools/docs/images/*.png
 ```
 
-求职看板每周一更新数据，这些图不需要每周重跑；目录有调整、或者想看最新趋势时再重跑，并同步 README 里引用的百分比和 ★。
+互联网社招看板每周一更新数据，这些图不需要每周重跑；目录有调整、或者想看最新趋势时再重跑，并同步 README 里引用的百分比和 ★。
